@@ -1,10 +1,10 @@
-------//    Cheatblox v5     //--
+------//    CheatBlox v5     //--
 -----// Made By Stefan#6965 //--
 
 
 --// Preload //--
 
-if not syn then error("Star API: Missing Synapse X Library.") end
+if not syn then error("CheatBlox: Missing Synapse X Library.") end
 if not game then
     repeat wait() until game ~= nil
 end
@@ -45,10 +45,10 @@ end
 
 CheatBlox.ClickTextButton = function(self,button)
     if typeof(button) ~= "Instance" then
-        error("Star API: Instance expected, got "..typeof(button)..".")
+        error("CheatBlox: Instance expected, got "..typeof(button)..".")
     end
     if button.ClassName ~= "TextButton" then
-        error("Star API: TextButton expected, got "..button.ClassName..".")
+        error("CheatBlox: TextButton expected, got "..button.ClassName..".")
     end
     for i,v in pairs(getconnections(button.MouseButton1Down)) do
         v.Function()
@@ -63,7 +63,7 @@ end
  
 CheatBlox.UnlockMetatableOf = function(self,mt)
     if type(mt) ~= "table" and type(mt) ~= "userdata" then
-        error("Star API: table or userdata expected, got "..typeof(mt)..".")
+        error("CheatBlox: table or userdata expected, got "..typeof(mt)..".")
     end
     setreadonly(getrawmetatable(mt),false)
     getrawmetatable(mt)["__metatable"] = nil
@@ -706,7 +706,7 @@ CheatBlox.Start = function()
             "run the selected tool.",
             function(tool)
                 if not tool then
-                    ConsoleError("StarTerminal: No tool selected.")
+                    ConsoleError("CheatBlox: No tool selected.")
                     return true
                 end
                 tools[tool][2]()
@@ -723,7 +723,7 @@ CheatBlox.Start = function()
             local done = commands[cmd][2](unpack(stuff))
             discard = false
         else
-            ConsoleError("StarTerminal: Unknown Command \""..cmd.."\".")
+            ConsoleError("CheatBlox: Unknown Command \""..cmd.."\".")
         end
     end
     spawn(function()
