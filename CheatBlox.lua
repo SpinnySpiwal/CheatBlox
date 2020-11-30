@@ -602,7 +602,7 @@ end
 
 CheatBlox.Start = function()
     repeat wait(0.1) until game:IsLoaded()
-    rconsolename("CheatBlox v1.2 - Made By Stefan#6965")
+    rconsolename("CheatBlox - Made By Stefan#6965")
     local LP = game:GetService("Players").LocalPlayer
     local discard = true
     local selected = nil
