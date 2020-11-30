@@ -750,4 +750,6 @@ CheatBlox.Start = function()
     discard = false
 end
 
+CheatBlox.Startup = CheatBlox.Start
+
 getgenv().CheatBlox = CheatBlox
