@@ -601,7 +601,7 @@ local function ConsoleInfo(txt)
 end
 
 CheatBlox.Start = function()
-    repeat wait(0.1) until game:IsLoaded()
+    repeat wait() until game and workspace and game:GetService("Players").LocalPlayer
     rconsolename("CheatBlox - Made By Stefan#6965")
     local LP = game:GetService("Players").LocalPlayer
     local discard = true
