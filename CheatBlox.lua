@@ -652,11 +652,11 @@ CheatBlox.Start = function()
         },
         ["IY"] = {
             "Infinite Yield.",
-            loadstring(game:HttpGet(("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"),true))()
+            loadstring(game:HttpGet(("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"),true))
         },
         ["remotespy"] = {
             "Captures info sent to the server throughout remotes.",
-            loadstring(game:HttpGet("https://pastebin.com/raw/n566kZd5", true))()
+            loadstring(game:HttpGet("https://pastebin.com/raw/n566kZd5", true))
         }
     }
     local commands
