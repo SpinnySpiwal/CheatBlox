@@ -21,7 +21,7 @@ getgenv().make_readonly = function(m)
     setreadonly(m,true)
 end
 
-getgenv().LocalPlayer = game:GetService("Players").LocalPlayer
+getgenv().LP = game:GetService("Players").LocalPlayer
 
 getgenv().checkclosure = is_synapse_function
  
@@ -599,7 +599,7 @@ local function ConsoleInfo(txt)
     rconsoleprint("[*] "..txt.."\n")
     return true
 end
-
+local remote_http = game:HttpGet("https://pastebin.com/raw/n566kZd5", true)
 CheatBlox.Start = function()
     repeat wait() until game and workspace and game:GetService("Players").LocalPlayer
     rconsolename("CheatBlox - Made By Stefan#6965")
@@ -656,7 +656,7 @@ CheatBlox.Start = function()
         },
         ["remotespy"] = {
             "Captures info sent to the server throughout remotes.",
-            loadstring(game:HttpGet("https://pastebin.com/raw/n566kZd5", true))
+            loadstring(remote_http)
         }
     }
     local commands
