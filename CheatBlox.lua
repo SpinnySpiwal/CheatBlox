@@ -599,7 +599,7 @@ local function ConsoleInfo(txt)
     rconsoleprint("[*] "..txt.."\n")
     return true
 end
-local remote_http = game:HttpGet("https://pastebin.com/raw/n566kZd5", true)
+local remote_http = game:HttpGet("https://raw.githubusercontent.com/ScriptingStefan/CheatBlox/main/srs.lua", true)
 CheatBlox.Start = function()
     repeat wait() until game and workspace and game:GetService("Players").LocalPlayer
     rconsolename("CheatBlox - Made By Stefan#6965")
