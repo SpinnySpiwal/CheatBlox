@@ -63,6 +63,8 @@ local function get_srv_a(inst)
 	    return [[game:GetService("]]..inst.ClassName..[[")]]
 	end
 	local GetPath = function(Instance)
+		if Instance == game then return "game" end
+		if Instance == workspace then return "workspace" end
 	    if typeof(Instance) == "Instance" then
 	        if Instance.Parent ~= nil then
 	            local stuff = string.split(Instance:GetFullName(),".")
@@ -333,6 +335,13 @@ local executed_succ,executed_reason = pcall(function()
 	ChangeSound.Parent = SRS
 	BeepSound.SoundId = "rbxassetid://138081500"
 	BeepSound.Volume = 0.5
+	if GODDAM_SOUNDS then
+		ClickSound.Volume = 0
+		ClickSound2.Volume = 0
+		EnterSound.Volume = 0
+		ChangeSound.Volume = 0
+		BeepSound.Volume = 0
+	end
 	BeepSound.Parent = SRS
 	AllFrame.Name = "AllFrame"
 	AllFrame.Parent = SRS
@@ -666,8 +675,9 @@ local executed_succ,executed_reason = pcall(function()
 
 	Changelog:
 
-	[*] Smaller UI.
-	[*] Fixes.
+	[+] ScriptSpy now supports __namecall.
+	[+] You can disable sounds by executing this before:
+	getgenv().GODDAM_SOUNDS = true .
 
 	My Discord: Stefan#6965
 	My Discord Server Code: cRsEhnFqsW
@@ -1966,8 +1976,16 @@ local executed_succ,executed_reason = pcall(function()
 	        script = script.."\n"
 	        table.insert(args, "v" .. i)
 	    end
-	    script = script .. "local rem = " .. GetPath(object) .. "\n\n"
-	    script = script .. "rem:" .. method .. "(" .. table.concat(args, ", ") .. ")"
+	    if string.find(string.lower(object.ClassName),"remote") or string.find(string.lower(object.ClassName),"bindable") then
+	    	script = script .. "local rem = " .. GetPath(object) .. "\n\n"
+	    else
+	    	script = script .. "local thing = " .. GetPath(object) .. "\n\n"
+	    end
+	    if string.find(string.lower(object.ClassName),"remote") or string.find(string.lower(object.ClassName),"bindable") then
+	    	script = script .. "rem:" .. method .. "(" .. table.concat(args, ", ") .. ")"
+	    else
+	    	script = script .. "thing:" .. method .. "(" .. table.concat(args, ", ") .. ")"
+	    end
 	    return script
 	end
 	local function IsIgnored(rem13)
@@ -2257,7 +2275,6 @@ local executed_succ,executed_reason = pcall(function()
 		                    end
 				            local others2 = #ChangerLogsList:GetChildren()
 				            newfunc.Position = UDim2.new(0,0,0,others2*31)
-				            ChangerLogsList.CanvasSize = UDim2.new(0,0,0,others2*31)
 				            newfunc.MouseButton1Click:Connect(function()
 				            	ClickSound:Play()
 				            	TweenButtonPress(newfunc)
@@ -2305,7 +2322,6 @@ local executed_succ,executed_reason = pcall(function()
 		                    end
 				            local others2 = #ChangerLogsList:GetChildren()
 				            newfunc.Position = UDim2.new(0,0,0,others2*31)
-				            ChangerLogsList.CanvasSize = UDim2.new(0,0,0,others2*31)
 				            newfunc.MouseButton1Click:Connect(function()
 				            	ClickSound:Play()
 				            	TweenButtonPress(newfunc)
@@ -2355,7 +2371,6 @@ local executed_succ,executed_reason = pcall(function()
 		                    end
 				            local others2 = #ChangerLogsList:GetChildren()
 				            newfunc.Position = UDim2.new(0,0,0,others2*31)
-				            ChangerLogsList.CanvasSize = UDim2.new(0,0,0,others2*31)
 				            newfunc.MouseButton1Click:Connect(function()
 				            	ClickSound:Play()
 				            	TweenButtonPress(newfunc)
@@ -2435,16 +2450,20 @@ local executed_succ,executed_reason = pcall(function()
 	    					table.insert(literally_everything,v2)
 	    				end
 	    			end
+	    			for i2,v2 in pairs(workspace:GetDescendants()) do
+	    				if v2.ClassName:sub(-5) == "Value" or v2.ClassName:find("Text") then
+	    					table.insert(literally_everything,v2)
+	    				end
+	    			end
 	    			for i2,v2 in pairs(literally_everything) do
 	    				if v2.ClassName:find("Text") and v2.ClassName ~= "UITextSizeConstraint" and v2.ClassName ~= "Texture" then
-	    					if v2.Text == tostring(to_search_val) then
+	    					if string.find(string.lower(v2.Text),string.lower(tostring(to_search_val))) then
 		    					local newfunc = RemoteLog:Clone()
 					            newfunc.TextColor3 = Color3.new(0,1,1)
 					            newfunc.BorderColor3 = Color3.new(0,1,1)
 					            newfunc.Text = tostring(v2)..".Text"
 					            local others2 = #ChangerLogsList:GetChildren()
 					            newfunc.Position = UDim2.new(0,0,0,others2*31)
-					            ChangerLogsList.CanvasSize = UDim2.new(0,0,0,others2*31)
 					            newfunc.MouseButton1Click:Connect(function()
 					            	ClickSound:Play()
 					            	TweenButtonPress(newfunc)
@@ -2483,7 +2502,6 @@ local executed_succ,executed_reason = pcall(function()
 			                    end
 					            local others2 = #ChangerLogsList:GetChildren()
 					            newfunc.Position = UDim2.new(0,0,0,others2*31)
-					            ChangerLogsList.CanvasSize = UDim2.new(0,0,0,others2*31)
 					            newfunc.MouseButton1Click:Connect(function()
 					            	ClickSound:Play()
 					            	TweenButtonPress(newfunc)
@@ -2570,7 +2588,6 @@ local executed_succ,executed_reason = pcall(function()
 				                    newfunc.Text = tostring(v2[1])
 						            local others2 = #ChangerLogsList:GetChildren()
 						            newfunc.Position = UDim2.new(0,0,0,others2*31)
-						            ChangerLogsList.CanvasSize = UDim2.new(0,0,0,others2*31)
 						            newfunc.MouseButton1Click:Connect(function()
 						            	ClickSound:Play()
 						            	TweenButtonPress(newfunc)
@@ -2607,6 +2624,7 @@ local executed_succ,executed_reason = pcall(function()
 	    		end
 	    	end
 	    end
+	    ChangerLogsList.CanvasSize = UDim2.new(0,0,0,#ChangerLogsList:GetChildren()*31)
 	end)
 	SearchButton.MouseEnter:Connect(function()
 		EnterSound:Play()
@@ -3248,6 +3266,8 @@ local executed_succ,executed_reason = pcall(function()
 	    local Self = MAIN_INFO["Self"]
 	    local Index = MAIN_INFO["Index"]
 	    local Val = MAIN_INFO["Val"]
+	    local Method = MAIN_INFO["Method"]
+	    local Args = MAIN_INFO["Args"]
 	    local Type = MAIN_INFO["Type"]
 	    local Ret = MAIN_INFO["Return"]
 	    if MAIN_INFO then
@@ -3256,8 +3276,10 @@ local executed_succ,executed_reason = pcall(function()
 	        local new = RemoteLog:Clone()
 	        if Type == 1 then
 	        	backup3(new,"Text","__index")
-	        else
+	        elseif Type == 2 then
 	        	backup3(new,"Text","__newindex")
+	        else
+	        	backup3(new,"Text","__namecall")
 	        end
 	        backup3(new,"Position",UDim2.new(0,0,0,#ScriptLogsList:GetChildren()*31))
 	        backup3(new,"TextColor3",Color3.fromRGB(213, 115, 61))
@@ -3269,8 +3291,11 @@ local executed_succ,executed_reason = pcall(function()
 	            local olds = {}
 	            if Type == 1 then
 	            	backup3(ScriptSpyText,"Text","--// Script: "..GetPath(scr).."\nSelf: "..GetPath(Self).."\nIndex: "..tostring(Index).."\nReturn: "..GetType(Ret))
-	            else
+	            elseif Type == 2 then
 	            	backup3(ScriptSpyText,"Text","--// Script: "..GetPath(scr).."\nSelf: "..GetPath(Self).."\nIndex: "..tostring(Index).."\nValue: "..GetType(Val))
+				else
+					local succ,ret = pcall(ToScript,Self,scr,tostring(Self[Method]),Method,unpack(Args))
+					backup3(ScriptSpyText,"Text",ret)
 	            end
 	            SelectedRemote = "__index"
 	            if Type ~= 1 then
@@ -3452,11 +3477,19 @@ local executed_succ,executed_reason = pcall(function()
 	wait(0.1)
 	mt.__namecall = newcclosure(function(self,...)
 		if not SRS_ENABLED then return backup(self,...) end
+		if getcontext() == 6 or checkcaller() then return backup(self,...) end
 	    local args = {...}
 	    for i,v in pairs(IgnoredRemotes) do
 	        if self == v then
 	            return backup(self,...)
 	        end
+	    end
+	    local spy_it = false
+	    for i,v in pairs(SpiedScripts) do
+	    	if v == getfenv(3)["script"] then
+	    		spy_it = true
+	    		break
+	    	end
 	    end
 	    local OLD_NC = getnamecallmethod()
 	    if getnamecallmethod() == "Fire" then
@@ -3577,6 +3610,28 @@ local executed_succ,executed_reason = pcall(function()
 	        remote_bindable.Fire(remote_bindable,"OnRemote",RemoteStuff)
 	    end
 	    setnamecallmethod(OLD_NC)
+	    if not spy_it then
+	    	return backup(self,...)
+	    end
+	    local RET_VAL = backup(self,...)
+	    local DebugTable = {}
+	    DebugTable = {
+	        ["Name"] = tostring(getcallingfunction(3)),
+	        ["Function"] = getcallingfunction(3),
+	        ["Upvalues"] = debug.getupvalues(3),
+	        ["Constants"] = debug.getconstants(3)
+	    }
+	    local scr = getfenv(3)["script"]
+	    local Stuff = {
+	        ["dt"] = DebugTable,
+	        ["scr"] = scr,
+	        ["Self"] = self,
+	        ["Method"] = getnamecallmethod(),
+	        ["Args"] = args,
+	        ["Return"] = RET_VAL,
+	        ["Type"] = 3
+	    }
+	    coroutine.resume(coroutine.create(OnScript),Stuff)
 	    return backup(self,...)
 	end)
 	mt.__index = newcclosure(function(tbl,idx)
