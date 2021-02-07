@@ -34,9 +34,10 @@ local getcontext = getcontext or syn.get_thread_identity or getthreadcontext
 local setcontext = setcontext or syn.set_thread_identity or setthreadcontext
 local toclipboard = syn.write_clipboard or setclipboard or toclipboard or write_clipboard
 local decompile = function(...)
+	local args1231 = {...}
 	local ret
 	pcall(function()
-		ret = decompile(...)
+		ret = decompile(unpack(args1231))
 	end)
 	if type(ret) ~= "string" or #ret < 3 then
 		return "Decompilation Error"
