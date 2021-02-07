@@ -33,6 +33,7 @@ if not syn then syn = {} end
 local getcontext = getcontext or syn.get_thread_identity or getthreadcontext
 local setcontext = setcontext or syn.set_thread_identity or setthreadcontext
 local toclipboard = syn.write_clipboard or setclipboard or toclipboard or write_clipboard
+local is_synapse_function = is_synapse_function or isexecutorclosure
 local decompile = function(...)
 	local args1231 = {...}
 	local ret
