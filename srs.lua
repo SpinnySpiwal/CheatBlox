@@ -31,7 +31,7 @@ end
 --// Support //--
 
 local getcallingfunction = function(stack)
-    return debug.getinfo(stack + 1).func
+    return debug.getinfo(stack + 1).func or debug.getinfo(stack + 1)["function"] or debug.getinfo(stack + 1)["Function"]
 end
 if not syn then syn = {} end
 local getcontext = getcontext or syn.get_thread_identity or getthreadcontext
