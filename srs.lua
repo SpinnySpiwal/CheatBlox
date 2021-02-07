@@ -4,10 +4,6 @@ if game:GetService("CoreGui"):FindFirstChild("SRS") then SRS_LOADED = nil return
 local SRS = Instance.new("ScreenGui")
 SRS.Name = "SRS"
 SRS.ResetOnSpawn = false
-local function call_func(func,...)
-	setcontext(6)
-	return func(...)
-end
 local run_sv = game:GetService("RunService")
 local DarkButtons = {}
 local COLOR_SCHEME_OPTIONS = {
@@ -38,11 +34,18 @@ local getcontext = getcontext or syn.get_thread_identity or getthreadcontext
 local setcontext = setcontext or syn.set_thread_identity or setthreadcontext
 local toclipboard = syn.write_clipboard or setclipboard or toclipboard or write_clipboard
 local decompile = function(...)
-	local ret = decompile(...)
-	if type(ret) ~= "string" or #ret < 10 then
+	local ret
+	pcall(function()
+		ret = decompile(...)
+	end)
+	if type(ret) ~= "string" or #ret < 3 then
 		return "Decompilation Error"
 	end
 	return ret
+end
+local function call_func(func,...)
+	setcontext(6)
+	return func(...)
 end
 local function GetMouse()
 	return game:GetService("Players").LocalPlayer:GetMouse()
