@@ -5,9 +5,7 @@
 --// Preload //--
 
 if not syn then error("CheatBlox: Missing Synapse X Library.") end
-if not game then
-    repeat wait() until game ~= nil
-end
+repeat wait() until game and workspace and game:IsLoaded()
  
 --// Compatibility (no this doesnt meant it'll work on protosmasher lol) //--
 
