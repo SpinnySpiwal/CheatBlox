@@ -56,133 +56,141 @@ local old_rc_frame
 local RightClick
 local ValChanger
 local function get_srv_a(inst)
-	    if not inst then return "ERR_NIL_INST" end
-	    if typeof(inst) == "userdata" then return "ERR_NIL_INST" end
-	    local srv = inst
-	    pcall(function()
-	        repeat srv = srv.Parent until srv.Parent == game
-	    end)
-	    return srv
-	end
-	local function ServiceToString(inst)
-	    return [[game:GetService("]]..inst.ClassName..[[")]]
-	end
-	local GetPath = function(Instance)
-		if Instance == game then return "game" end
-		if Instance == workspace then return "workspace" end
-	    if typeof(Instance) == "Instance" then
-	        if Instance.Parent ~= nil then
-	            local stuff = string.split(Instance:GetFullName(),".")
-	            local passed = false
-	            local newstuff = {}
-	            for i,v in pairs(stuff) do
-	                if passed then
-	                    table.insert(newstuff,v)
-	                else
-	                    passed = true
-	                end
-	            end
-	            local almost = (Instance.Parent ~= game and ServiceToString(get_srv_a(Instance))) or ServiceToString(Instance)
-	            for i,v in pairs(newstuff) do
-	            	if not string.split(v,"")[1] then
-	            		almost = almost.."[\"\"]"
-	                elseif string.find(v," ") or not string.split(v,"")[1]:match("%a") or v:match("%p") then
-	                	almost = almost.."[\""..v.."\"]"
-	                else
-	                	almost = almost.."."..v
-	                end
-	            end
-	            return almost
-	        else
-	            return "[NIL]."..Instance:GetFullName()
-	        end
-	    else
-	        return tostring(Instance)
-	    end
-	end
-	local GetType = function(Instance)
-	    local Types = {
-	        enumitem = function()
-	            return "Enum." .. tostring(Instance.EnumType) .. "." .. tostring(Instance.Name)
-	        end,
-	        instance = function()
-	            return GetPath(Instance)
-	        end,
-	        cframe = function()
-	            return "CFrame.new(" .. tostring(Instance) .. ")"
-	        end,
-	        vector3 = function()
-	            return "Vector3.new(" .. tostring(Instance) .. ")"
-	        end,
-	        brickcolor = function()
-	            return "BrickColor.new(\"" .. tostring(Instance) .. "\")"
-	        end,
-	        color3 = function()
-	            return "Color3.new(" .. tostring(Instance) .. ")"
-	        end,
-	        string = function()
-	            local S = tostring(Instance)
-	            if not S then
-	                S = "If you see this message, then this is a trap remote, an attempt to stop remotespys."
-	            end
-	            return [["]]..S..[["]]
-	        end,
-	        ray = function()
-	            return "Ray.new(Vector3.new(" .. tostring(Instance.Origin) .. "), Vector3.new(" .. tostring(Instance.Direction) .. "))"
-	        end,
-	        number = function()
-	            return tostring(Instance)
-	        end,
-	        userdata = function()
-	        	return "[USERDATA]"
-	        end
-	    }
-	    if Types[string.lower(typeof(Instance))] ~= nil then
-	        return Types[string.lower(typeof(Instance))]()
-	    else
-	        return tostring(Instance)
-	    end
-	end
-
-	local TableString
-	TableString = function(T,N)
-		if not N then N = 1 end
-	    local M = {}
-	    for i, v in pairs(T) do
-	        local I = "\n"..string.rep("    ",N).. (type(i) == "number" and "[" .. tostring(i) .. "] = " or "[\"" .. tostring(i) .. "\"] = ")
-	        table.insert(M, tostring(I) .. (type(v) == "table" and  T ~= v and T ~= i and N < 100 and TableString(v,N+1) or GetType(v)))
-	    end
-	    local str_to_ret = "{" .. table.concat(M, ", ") .. "\n"..string.rep("    ",N-1).."}"
-	    if #str_to_ret > 150000 then
-	    	return "table too long"
-	    else	
-	    	return str_to_ret
-	    end
-	end
-	local TweenedButtons = {}
-	local function TweenButtonPress(button)
-		spawn(function()
-			wait()
-			if old_rc_frame then
-				old_rc_frame:Destroy()
+    if not inst then return "ERR_NIL_INST" end
+    if typeof(inst) == "userdata" then return "ERR_NIL_INST" end
+    local srv = inst
+    pcall(function()
+        repeat srv = srv.Parent until srv.Parent == game
+    end)
+    return srv
+end
+local function ServiceToString(inst)
+    return [[game:GetService("]]..inst.ClassName..[[")]]
+end
+local GetPath
+GetPath = function(Instance,pass)
+	if Instance == game then return "game" end
+	if Instance == workspace then return "workspace" end
+	if Instance == game.Players.LocalPlayer and not pass then return "game:GetService(\"Players\").LocalPlayer" end
+	if Instance == game.Players.LocalPlayer.Character and not pass then return "game:GetService(\"Players\").LocalPlayer.Character" end
+    if typeof(Instance) == "Instance" then
+        if Instance.Parent ~= nil then
+            local stuff = string.split(Instance:GetFullName(),".")
+            local passed = false
+            local newstuff = {}
+            for i,v in pairs(stuff) do
+                if passed then
+                    table.insert(newstuff,v)
+                else
+                    passed = true
+                end
+            end
+            local almost = (Instance.Parent ~= game and ServiceToString(get_srv_a(Instance))) or ServiceToString(Instance)
+            for i,v in pairs(newstuff) do
+            	if not string.split(v,"")[1] then
+            		almost = almost.."[\"\"]"
+                elseif string.find(v," ") or not string.split(v,"")[1]:match("%a") or v:match("%p") then
+                	almost = almost.."[\""..v.."\"]"
+                else
+                	almost = almost.."."..v
+                end
+            end
+            if Instance:IsDescendantOf(game.Players.LocalPlayer.Character) then
+            	almost = "game:GetService(\"Players\").LocalPlayer.Character"..string.sub(almost,1+#GetPath(game.Players.LocalPlayer.Character,true))
+            end
+            if Instance:IsDescendantOf(game.Players.LocalPlayer) then
+            	almost = "game:GetService(\"Players\").LocalPlayer"..string.sub(almost,1+#GetPath(game.Players.LocalPlayer,true))
+            end
+            return almost
+        else
+            return "[NIL]."..Instance:GetFullName()
+        end
+    else
+        return tostring(Instance)
+    end
+end
+local GetType = function(Instance)
+    local Types = {
+        enumitem = function()
+            return "Enum." .. tostring(Instance.EnumType) .. "." .. tostring(Instance.Name)
+        end,
+        instance = function()
+            return GetPath(Instance)
+        end,
+        cframe = function()
+            return "CFrame.new(" .. tostring(Instance) .. ")"
+        end,
+        vector3 = function()
+            return "Vector3.new(" .. tostring(Instance) .. ")"
+        end,
+        brickcolor = function()
+            return "BrickColor.new(\"" .. tostring(Instance) .. "\")"
+        end,
+        color3 = function()
+            return "Color3.new(" .. tostring(Instance) .. ")"
+        end,
+        string = function()
+            local S = tostring(Instance)
+            if not S then
+                S = "If you see this message, then this is a trap remote, an attempt to stop remotespys."
+            end
+            return [["]]..S..[["]]
+        end,
+        ray = function()
+            return "Ray.new(Vector3.new(" .. tostring(Instance.Origin) .. "), Vector3.new(" .. tostring(Instance.Direction) .. "))"
+        end,
+        number = function()
+            return tostring(Instance)
+        end,
+        userdata = function()
+        	return "[USERDATA]"
+        end
+    }
+    if Types[string.lower(typeof(Instance))] ~= nil then
+        return Types[string.lower(typeof(Instance))]()
+    else
+        return tostring(Instance)
+    end
+end
+local TableString
+TableString = function(T,N)
+	if not N then N = 1 end
+    local M = {}
+    for i, v in pairs(T) do
+        local I = "\n"..string.rep("    ",N).. (type(i) == "number" and "[" .. tostring(i) .. "] = " or "[\"" .. tostring(i) .. "\"] = ")
+        table.insert(M, tostring(I) .. (type(v) == "table" and  T ~= v and T ~= i and N < 100 and TableString(v,N+1) or GetType(v)))
+    end
+    local str_to_ret = "{" .. table.concat(M, ", ") .. "\n"..string.rep("    ",N-1).."}"
+    if #str_to_ret > 150000 then
+    	return "table too long"
+    else	
+    	return str_to_ret
+    end
+end
+local TweenedButtons = {}
+local function TweenButtonPress(button)
+	spawn(function()
+		wait()
+		if old_rc_frame then
+			old_rc_frame:Destroy()
+		end
+	end)
+	spawn(function()
+		for i,v in pairs(TweenedButtons) do
+			if v == button then
+				return
 			end
-		end)
-		spawn(function()
-			for i,v in pairs(TweenedButtons) do
-				if v == button then
-					return
-				end
+		end
+		table.insert(TweenedButtons,button)
+		game:GetService("TweenService"):Create(button,TweenInfo.new(0.1,Enum.EasingStyle.Linear,Enum.EasingDirection.Out,0,true,0),{["Position"] = button.Position + UDim2.new(0,3,0,3)}):Play()
+		wait(0.21)
+		for i,v in pairs(TweenedButtons) do
+			if v == button then
+				table.remove(TweenedButtons,i)
 			end
-			table.insert(TweenedButtons,button)
-			game:GetService("TweenService"):Create(button,TweenInfo.new(0.1,Enum.EasingStyle.Linear,Enum.EasingDirection.Out,0,true,0),{["Position"] = button.Position + UDim2.new(0,3,0,3)}):Play()
-			wait(0.21)
-			for i,v in pairs(TweenedButtons) do
-				if v == button then
-					table.remove(TweenedButtons,i)
-				end
-			end
-		end)
-	end
+		end
+	end)
+end
 --// Bypass //--
 
 if syn.protect_gui and not Sirhurt and not PROTOSMASHER_LOADED then
@@ -1961,9 +1969,10 @@ local executed_succ,executed_reason = pcall(function()
 		        end)
 		    end
 		end
-	    local olds = {}
 	    local args = {}
-	    for i,v in pairs({...}) do
+	    local stuff_idk = {...}
+	    for i = 1,#stuff_idk do
+	    	v = stuff_idk[i]
 	        script = script.."local v"..tostring(i).." = "
 	        if type(v) == "table" then
 	        	if getrawmetatable(v) then
@@ -3209,6 +3218,7 @@ local executed_succ,executed_reason = pcall(function()
 	    local args = MAIN_INFO["args"]
 	    local method = MAIN_INFO["method"]
 	    local IsHidden = MAIN_INFO["Hidden"]
+	    local ToScript = MAIN_INFO["ToScript"]
 	    if MAIN_INFO then
 	    	BeepSound:Play()
 	        local key = DebugTable.Name
@@ -3225,8 +3235,7 @@ local executed_succ,executed_reason = pcall(function()
 	        	ClickSound:Play()
 	        	TweenButtonPress(new)
 	            local olds = {}
-	            local succ,ret = pcall(ToScript,remote,scr,key,method,unpack(args))
-	            RemoteSpyText.Text = (IsHidden and "--// Hidden\n"..ret) or ret
+	            RemoteSpyText.Text = (IsHidden and "--// Hidden\n"..ToScript) or ToScript
 	            SelectedRemote = LastRemote
 	            SelectedRemoteArgs = args
 	            ToDecompile = scr
@@ -3396,13 +3405,15 @@ local executed_succ,executed_reason = pcall(function()
 	            ["Constants"] = cons
 	        }
 	        local scr = getcallingscript() or getfenv(3)["script"] or "Unknown"
+	        local succ,ret = pcall(ToScript,self,scr,DebugTable.Name,"FireServer",unpack(args))
 	        local RemoteStuff = {
 	            ["dt"] = DebugTable,
 	            ["scr"] = scr,
 	            ["rem"] = self,
 	            ["args"] = args,
 	            ["method"] = "FireServer",
-	            ["Hidden"] = true
+	            ["Hidden"] = true,
+	            ["ToScript"] = ret
 	        }
 			remote_bindable.Fire(remote_bindable,"OnRemote",RemoteStuff)
 	    end
@@ -3464,13 +3475,15 @@ local executed_succ,executed_reason = pcall(function()
 		        ["Constants"] = cons
 		    }
 		    local scr = getcallingscript() or getfenv(3)["script"] or "Unknown"
+		    local succ,ret = pcall(ToScript,self,scr,DebugTable.Name,"InvokeServer",unpack(args))
 		    local RemoteStuff = {
 				["dt"] = DebugTable,
 				["scr"] = scr,
 				["rem"] = self,
 				["args"] = args,
 				["method"] = "InvokeServer",
-				["Hidden"] = true
+				["Hidden"] = true,
+				["ToScript"] = ret
 			}
 		    remote_bindable.Fire(remote_bindable,"OnRemote",RemoteStuff)
 		end
@@ -3548,12 +3561,14 @@ local executed_succ,executed_reason = pcall(function()
 	            ["Constants"] = cons
 	        }
 	        local scr = getcallingscript() or getfenv(3)["script"] or "Unknown"
+	        local succ,ret = pcall(ToScript,self,scr,DebugTable.Name,"FireServer",unpack(args))
 	        local RemoteStuff = {
 	            ["dt"] = DebugTable,
 	            ["scr"] = scr,
 	            ["rem"] = self,
 	            ["args"] = args,
-	            ["method"] = "FireServer"
+	            ["method"] = "FireServer",
+	            ["ToScript"] = ret
 	        }
 	        remote_bindable:Fire("OnRemote",RemoteStuff)
 	    end
@@ -3605,12 +3620,14 @@ local executed_succ,executed_reason = pcall(function()
 	            ["Constants"] = cons
 	        }
 	        local scr = getcallingscript() or getfenv(3)["script"] or "Unknown"
+	        local succ,ret = pcall(ToScript,self,scr,DebugTable.Name,"InvokeServer",unpack(args))
 	        local RemoteStuff = {
 	            ["dt"] = DebugTable,
 	            ["scr"] = scr,
 	            ["rem"] = self,
 	            ["args"] = args,
-	            ["method"] = "InvokeServer"
+	            ["method"] = "InvokeServer",
+	            ["ToScript"] = ret
 	        }
 	        remote_bindable.Fire(remote_bindable,"OnRemote",RemoteStuff)
 	    end
