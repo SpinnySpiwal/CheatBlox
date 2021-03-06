@@ -688,9 +688,11 @@ local executed_succ,executed_reason = pcall(function()
 
 	Changelog:
 
-	[+] ScriptSpy now supports __namecall.
-	[+] You can disable sounds by executing this before:
-	getgenv().GODDAM_SOUNDS = true .
+	[+] CheatBlox will not replace stuff like
+	game:GetService("Players").ROBLOX.PlayerGui with
+	game:GetService("Players").LocalPlayer.PlayerGui.
+	Applies to character aswell.
+	[*] Fixed nil arguments.
 
 	My Discord: Stefan#6965
 	My Discord Server Code: cRsEhnFqsW
