@@ -1,5 +1,6 @@
 repeat wait() until game and game:IsLoaded()
 if game:GetService("CoreGui"):FindFirstChild("SRS") then return end
+local LP = game:GetService("Players").LocalPlayer
 local SRS = Instance.new("ScreenGui")
 SRS.Name = "SRS"
 SRS.ResetOnSpawn = false
@@ -38,7 +39,7 @@ local decompile = function(...)
 	pcall(function()
 		ret = decompile(unpack(args1231))
 	end)
-	if type(ret) ~= "string" or #ret < 3 then
+	if type(ret) ~= "string" or #ret < 1 then
 		return "Decompilation Error"
 	end
 	return ret
@@ -48,7 +49,7 @@ local function call_func(func,...)
 	return func(...)
 end
 local function GetMouse()
-	return game:GetService("Players").LocalPlayer:GetMouse()
+	return LP:GetMouse()
 end
 local old_rc_frame
 local RightClick
@@ -57,9 +58,7 @@ local function get_srv_a(inst)
     if not inst then return "ERR_NIL_INST" end
     if typeof(inst) == "userdata" then return "ERR_NIL_INST" end
     local srv = inst
-    pcall(function()
-        repeat srv = srv.Parent until srv.Parent == game
-    end)
+    repeat srv = srv.Parent until srv.Parent == game
     return srv
 end
 local function ServiceToString(inst)
@@ -69,8 +68,8 @@ local GetPath
 GetPath = function(Instance,pass)
 	if Instance == game then return "game" end
 	if Instance == workspace then return "workspace" end
-	if Instance == game.Players.LocalPlayer and not pass then return "game:GetService(\"Players\").LocalPlayer" end
-	if Instance == game.Players.LocalPlayer.Character and not pass then return "game:GetService(\"Players\").LocalPlayer.Character" end
+	if Instance == LP and not pass then return "game:GetService(\"Players\").LocalPlayer" end
+	if Instance == LP.Character and not pass then return "game:GetService(\"Players\").LocalPlayer.Character" end
     if typeof(Instance) == "Instance" then
         if Instance.Parent ~= nil then
             local stuff = string.split(Instance:GetFullName(),".")
@@ -93,11 +92,11 @@ GetPath = function(Instance,pass)
                 	almost = almost.."."..v
                 end
             end
-            if Instance:IsDescendantOf(game.Players.LocalPlayer.Character) then
-            	almost = "game:GetService(\"Players\").LocalPlayer.Character"..string.sub(almost,1+#GetPath(game.Players.LocalPlayer.Character,true))
+            if Instance:IsDescendantOf(LP.Character) then
+            	almost = "game:GetService(\"Players\").LocalPlayer.Character"..string.sub(almost,1+#GetPath(LP.Character,true))
             end
-            if Instance:IsDescendantOf(game.Players.LocalPlayer) then
-            	almost = "game:GetService(\"Players\").LocalPlayer"..string.sub(almost,1+#GetPath(game.Players.LocalPlayer,true))
+            if Instance:IsDescendantOf(LP) then
+            	almost = "game:GetService(\"Players\").LocalPlayer"..string.sub(almost,1+#GetPath(LP,true))
             end
             return almost
         else
@@ -309,7 +308,6 @@ local SearchButtonShadow = Instance.new("TextLabel")
 local ChangerLogsList = Instance.new("ScrollingFrame")
 local RemoteLog = Instance.new("TextButton")
 local RemoteLogShadow = Instance.new("TextLabel")
-local NewsTextShadow = NewsText:Clone()
 
 if GODDAM_SOUNDS then
 	ClickSound.Volume = 0
@@ -704,10 +702,6 @@ NewsText.TextColor3 = Color3.new(1, 1, 1)
 NewsText.TextSize = 25
 NewsText.TextYAlignment = Enum.TextYAlignment.Top
 NewsText.ZIndex = NewsText.ZIndex + 1
-NewsTextShadow.ZIndex = NewsTextShadow.ZIndex - 1
-NewsTextShadow.TextColor3 = Color3.new(0,0,0)
-NewsTextShadow.Position = NewsTextShadow.Position + UDim2.new(0,3,0,3)
-NewsTextShadow.Parent = NewsText.Parent
 RemoteSpyFrame.Name = "RemoteSpyFrame"
 RemoteSpyFrame.Parent = MainFrame
 RemoteSpyFrame.BackgroundColor3 = COLOR_SCHEME
@@ -1953,19 +1947,8 @@ local HasSpecial = function(str)
     return (string.match(str,"%c") or string.match(str,"%s") or string.match(str,"%p")) ~= nil
 end
 local ToScript = function(object,scr,fnc,method, ...)
-    local script = ""
-    pcall(function()
-        script = script.."--// Script: "..GetPath(scr)
-    end)
-    if type(fnc) == "function" then
-        pcall(function()
-            script = script.."\n--// Function: "..tostring(fnc).."\n\n"
-        end)
-    elseif type(fnc) == "string" then
-        pcall(function()
-            script = script.."\n--// Function: "..fnc.."\n\n"
-        end)
-    end
+    local script = "--// Script: "..GetPath(scr)
+    script = script.."\n--// Function: "..tostring(fnc).."\n\n"
     local args = {}
     local stuff_idk = {...}
     for i = 1,#stuff_idk do
@@ -2070,9 +2053,7 @@ UpdateRemotes = function()
 	end
 	FindRemotes(game)
     for i,v in pairs(insts) do
-    	if not typeof(v) == "Instance" or v:IsDescendantOf(game:GetService("RobloxReplicatedStorage")) then
-    		continue
-    	end
+    	if not typeof(v) == "Instance" or v:IsDescendantOf(game:GetService("RobloxReplicatedStorage")) then continue end
         pcall(function()
             if v:IsA("RemoteEvent") then
                 local new = RemoteLog:Clone()
@@ -2416,14 +2397,14 @@ SearchButton.MouseButton1Click:Connect(function()
     			end
     		elseif to_search_val_type == "prop" then
     			local literally_everything = {}
-    			if game.Players.LocalPlayer.Character then
-	    			for i2,v2 in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+    			if LP.Character then
+	    			for i2,v2 in pairs(LP.Character:GetDescendants()) do
 	    				if v2.ClassName:sub(-5) == "Value" or v2.ClassName:find("Text") then
 	    					table.insert(literally_everything,v2)
 	    				end
 	    			end
     			end
-    			for i2,v2 in pairs(game.Players.LocalPlayer:GetDescendants()) do
+    			for i2,v2 in pairs(LP:GetDescendants()) do
     				if v2.ClassName:sub(-5) == "Value" or v2.ClassName:find("Text") then
     					table.insert(literally_everything,v2)
     				end
@@ -2574,11 +2555,9 @@ SearchButton.MouseButton1Click:Connect(function()
     				end
     			end
     			for i2,v2 in pairs(workspace:GetDescendants()) do
-    				pcall(function()
-	    				if v2 and v2:IsA("ModuleScript") and type(require(v2)) == "table" and require(v2) ~= {} then
-	    					table.insert(found_tbls,require(v2))
-	    				end
-    				end)
+    				if v2 and v2:IsA("ModuleScript") and type(require(v2)) == "table" and require(v2) ~= {} then
+    					table.insert(found_tbls,require(v2))
+    				end
     			end
     			for i2,v2 in pairs(found_tbls) do
     				if type(v2[1]) == "table" then
@@ -3303,8 +3282,7 @@ local OnScript = function(MAIN_INFO)
             elseif Type == 2 then
             	backup3(ScriptSpyText,"Text","--// Script: "..GetPath(scr).."\nSelf: "..GetPath(Self).."\nIndex: "..tostring(Index).."\nValue: "..GetType(Val))
 			else
-				local succ,ret = pcall(ToScript,Self,scr,tostring(Self[Method]),Method,unpack(Args))
-				backup3(ScriptSpyText,"Text",ret)
+				backup3(ScriptSpyText,"Text",ToScript(Self,scr,tostring(Self[Method]),Method,unpack(Args)))
             end
             SelectedRemote = "__index"
             if Type ~= 1 then
@@ -3400,7 +3378,6 @@ local FireServerHook = newcclosure(function(self,...)
         ["Constants"] = cons
     }
     local scr = getcallingscript() or getfenv(3)["script"] or "Unknown"
-    local succ,ret = pcall(ToScript,self,scr,DebugTable.Name,"FireServer",unpack(args))
     local RemoteStuff = {
         ["dt"] = DebugTable,
         ["scr"] = scr,
@@ -3408,7 +3385,7 @@ local FireServerHook = newcclosure(function(self,...)
         ["args"] = args,
         ["method"] = "FireServer",
         ["Hidden"] = true,
-        ["ToScript"] = ret
+        ["ToScript"] = ToScript(self,scr,DebugTable.Name,"FireServer",unpack(args))
     }
 	remote_bindable.Fire(remote_bindable,"OnRemote",RemoteStuff)
     return FireServerBackup(self,...)
@@ -3469,7 +3446,6 @@ local InvokeServerHook = newcclosure(function(self,...)
         ["Constants"] = cons
     }
     local scr = getcallingscript() or getfenv(3)["script"] or "Unknown"
-    local succ,ret = pcall(ToScript,self,scr,DebugTable.Name,"InvokeServer",unpack(args))
     local RemoteStuff = {
 		["dt"] = DebugTable,
 		["scr"] = scr,
@@ -3477,7 +3453,7 @@ local InvokeServerHook = newcclosure(function(self,...)
 		["args"] = args,
 		["method"] = "InvokeServer",
 		["Hidden"] = true,
-		["ToScript"] = ret
+		["ToScript"] = ToScript(self,scr,DebugTable.Name,"InvokeServer",unpack(args))
 	}
     remote_bindable.Fire(remote_bindable,"OnRemote",RemoteStuff)
     return InvokeServerBackup(self,...)
@@ -3554,14 +3530,13 @@ mt.__namecall = newcclosure(function(self,...)
             ["Constants"] = cons
         }
         local scr = getcallingscript() or getfenv(3)["script"] or "Unknown"
-        local succ,ret = pcall(ToScript,self,scr,DebugTable.Name,"FireServer",unpack(args))
         local RemoteStuff = {
             ["dt"] = DebugTable,
             ["scr"] = scr,
             ["rem"] = self,
             ["args"] = args,
             ["method"] = "FireServer",
-            ["ToScript"] = ret
+            ["ToScript"] = ToScript(self,scr,DebugTable.Name,"FireServer",unpack(args))
         }
         remote_bindable:Fire("OnRemote",RemoteStuff)
     end
@@ -3613,14 +3588,13 @@ mt.__namecall = newcclosure(function(self,...)
             ["Constants"] = cons
         }
         local scr = getcallingscript() or getfenv(3)["script"] or "Unknown"
-        local succ,ret = pcall(ToScript,self,scr,DebugTable.Name,"InvokeServer",unpack(args))
         local RemoteStuff = {
             ["dt"] = DebugTable,
             ["scr"] = scr,
             ["rem"] = self,
             ["args"] = args,
             ["method"] = "InvokeServer",
-            ["ToScript"] = ret
+            ["ToScript"] = ToScript(self,scr,DebugTable.Name,"InvokeServer",unpack(args))
         }
         remote_bindable.Fire(remote_bindable,"OnRemote",RemoteStuff)
     end
