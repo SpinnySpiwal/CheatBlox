@@ -1,4 +1,4 @@
-repeat wait() until game and game:IsLoaded()
+repeat wait() until game and workspace and game:IsLoaded()
 if game:GetService("CoreGui"):FindFirstChild("SRS") then return end
 local LP = game:GetService("Players").LocalPlayer
 local SRS = Instance.new("ScreenGui")
@@ -689,7 +689,7 @@ F8 to hide/show GUI
 
 Changelog:
 
-[+] CheatBlox will not replace stuff like
+[+] CheatBlox will now replace stuff like
 game:GetService("Players").ROBLOX.PlayerGui with
 game:GetService("Players").LocalPlayer.PlayerGui.
 Applies to character aswell.
@@ -1405,11 +1405,15 @@ button_options = {
 			["Function"] = function(func)
 				local str = "local function ReturnFunc()\n    for i,v in pairs(getgc()) do\n        if type(v) == \"function\" and not is_synapse_function(v) and islclosure(v) then\n"
 				str = str.."            if #debug.getupvalues(v) == "..tostring(#debug.getupvalues(func)).." and #debug.getconstants(v) == "..tostring(#debug.getconstants(func)) -- add more conds
+				local capped_stuff = 0
 				for i,v in pairs(debug.getconstants(func)) do
+					if capped_stuff > 40 then break end
 					if type(v) == "string" then
 						str = str.." and debug.getconstants(v)["..tostring(i).."] == [["..tostring(v).."]]"
+						capped_stuff = capped_stuff + 1
 					elseif type(v) == "number" then
 						str = str.." and debug.getconstants(v)["..tostring(i).."] == "..tostring(v)
+						capped_stuff = capped_stuff + 1
 					end
 				end
 				str = str.." then\n                return v\n            end\n"
@@ -1960,7 +1964,7 @@ local ToScript = function(object,scr,fnc,method, ...)
         		for i2,v2 in pairs(v) do
         			new_secure_table[i2] = v2
         		end
-        		script = script..TableString(v)
+        		script = script..TableString(new_secure_table)
         	else
         		script = script..TableString(v)
         	end
@@ -3333,7 +3337,9 @@ local FireServerHook = newcclosure(function(self,...)
 
     for i,v in pairs(IgnoredCalls) do
         for i2,v2 in pairs(v["Args"]) do
-        	if v2 == args[i2] and type(v2) == "string" and type(args[i2]) == "string" then
+        	if getrawmetatable(v2) ~= {} and getrawmetatable(v2) ~= nil then continue end
+        	if getrawmetatable(args[i2]) ~= {} and getrawmetatable(args[i2]) ~= nil then continue end
+        	if type(v2) == "string" and type(args[i2]) == "string" and v2 == args[i2] then
         		return FireServerBackup(self,...)
         	end
         end
@@ -3350,6 +3356,7 @@ local FireServerHook = newcclosure(function(self,...)
     				if i2 == "__index" or i2 == "__newindex" or i2 == "__tostring" then continue end
     				new_protected_table[i2] = v2
     			end
+    			upvals[i] = new_protected_table
     		end
     	else
     		upvals[i] = v
@@ -3359,16 +3366,17 @@ local FireServerHook = newcclosure(function(self,...)
     for i,v in pairs(debug.getconstants(3)) do
     	if (typeof(v) == "table" or typeof(v) == "userdata") and getrawmetatable(v) ~= {} then
     		if typeof(v) == "userdata" then
-    			upvals[i] = newproxy(false)
+    			cons[i] = newproxy(false)
     		else
     			local new_protected_table = {}
     			for i2,v2 in pairs(v) do
     				if i2 == "__index" or i2 == "__newindex" or i2 == "__tostring" then continue end
     				new_protected_table[i2] = v2
     			end
+    			cons[i] = new_protected_table
     		end
     	else
-    		upvals[i] = v
+    		cons[i] = v
     	end
     end
     DebugTable = {
@@ -3401,7 +3409,9 @@ local InvokeServerHook = newcclosure(function(self,...)
 
 	for i,v in pairs(IgnoredCalls) do
         for i2,v2 in pairs(v["Args"]) do
-        	if v2 == args[i2] and type(v2) == "string" and type(args[i2]) == "string" then
+        	if getrawmetatable(v2) ~= {} and getrawmetatable(v2) ~= nil then continue end
+        	if getrawmetatable(args[i2]) ~= {} and getrawmetatable(args[i2]) ~= nil then continue end
+        	if type(v2) == "string" and type(args[i2]) == "string" and v2 == args[i2] then
         		return InvokeServerBackup(self,...)
         	end
         end
@@ -3427,16 +3437,17 @@ local InvokeServerHook = newcclosure(function(self,...)
     for i,v in pairs(debug.getconstants(3)) do
     	if (typeof(v) == "table" or typeof(v) == "userdata") and getrawmetatable(v) ~= {} then
     		if typeof(v) == "userdata" then
-    			upvals[i] = newproxy(false)
+    			cons[i] = newproxy(false)
     		else
     			local new_protected_table = {}
     			for i2,v2 in pairs(v) do
     				if i2 == "__index" or i2 == "__newindex" or i2 == "__tostring" then continue end
     				new_protected_table[i2] = v2
     			end
+    			cons[i] = new_protected_table
     		end
     	else
-    		upvals[i] = v
+    		cons[i] = v
     	end
     end
     DebugTable = {
@@ -3459,9 +3470,7 @@ local InvokeServerHook = newcclosure(function(self,...)
     return InvokeServerBackup(self,...)
 end)
 FireServerBackup = hookfunction(Instance.new("RemoteEvent").FireServer,FireServerHook)
-wait(0.1)
 InvokeServerBackup = hookfunction(Instance.new("RemoteFunction").InvokeServer,InvokeServerHook)
-wait(0.1)
 mt.__namecall = newcclosure(function(self,...)
 	if not SRS_ENABLED then return backup(self,...) end
 	if getcontext() == 6 or checkcaller() then return backup(self,...) end
@@ -3483,13 +3492,15 @@ mt.__namecall = newcclosure(function(self,...)
     	return backup(self,...)
     end
     if getnamecallmethod() == "FireServer" and self.ClassName == "RemoteEvent" then
-        for i,v in pairs(IgnoredCalls) do
-            for i2,v2 in pairs(v["Args"]) do
-            	if v2 == args[i2] and type(v2) == "string" and type(args[i2]) == "string" then
-            		return backup(self,...)
-            	end
-            end
-        end
+		for i,v in pairs(IgnoredCalls) do
+	        for i2,v2 in pairs(v["Args"]) do
+	        	if getrawmetatable(v2) ~= {} and getrawmetatable(v2) ~= nil then continue end
+	        	if getrawmetatable(args[i2]) ~= {} and getrawmetatable(args[i2]) ~= nil then continue end
+	        	if type(v2) == "string" and type(args[i2]) == "string" and v2 == args[i2] then
+	        		return backup(self,...)
+	        	end
+	        end
+	    end
         local DebugTable = {}
         local upvals = {}
         for i,v in pairs(debug.getupvalues(3)) do
@@ -3508,21 +3519,22 @@ mt.__namecall = newcclosure(function(self,...)
         	end
         end
         local cons = {}
-        for i,v in pairs(debug.getconstants(3)) do
-        	if (typeof(v) == "table" or typeof(v) == "userdata") and getrawmetatable(v) ~= {} then
-        		if typeof(v) == "userdata" then
-        			upvals[i] = newproxy(false)
-        		else
-        			local new_protected_table = {}
-        			for i2,v2 in pairs(v) do
-        				if i2 == "__index" or i2 == "__newindex" or i2 == "__tostring" then continue end
-        				new_protected_table[i2] = v2
-        			end
-        		end
-        	else
-        		upvals[i] = v
-        	end
-        end
+	    for i,v in pairs(debug.getconstants(3)) do
+	    	if (typeof(v) == "table" or typeof(v) == "userdata") and getrawmetatable(v) ~= {} then
+	    		if typeof(v) == "userdata" then
+	    			cons[i] = newproxy(false)
+	    		else
+	    			local new_protected_table = {}
+	    			for i2,v2 in pairs(v) do
+	    				if i2 == "__index" or i2 == "__newindex" or i2 == "__tostring" then continue end
+	    				new_protected_table[i2] = v2
+	    			end
+	    			cons[i] = new_protected_table
+	    		end
+	    	else
+	    		cons[i] = v
+	    	end
+	    end
         DebugTable = {
             ["Name"] = tostring(getcallingfunction(3)),
             ["Function"] = getcallingfunction(3),
@@ -3541,13 +3553,15 @@ mt.__namecall = newcclosure(function(self,...)
         remote_bindable:Fire("OnRemote",RemoteStuff)
     end
     if getnamecallmethod() == "InvokeServer" and self.ClassName == "RemoteFunction" then
-        for i,v in pairs(IgnoredCalls) do
-            for i2,v2 in pairs(v["Args"]) do
-            	if v2 == args[i2] and type(v2) == "string" and type(args[i2]) == "string" then
-            		return backup(self,...)
-            	end
-            end
-        end
+	    for i,v in pairs(IgnoredCalls) do
+	        for i2,v2 in pairs(v["Args"]) do
+	        	if getrawmetatable(v2) ~= {} and getrawmetatable(v2) ~= nil then continue end
+	        	if getrawmetatable(args[i2]) ~= {} and getrawmetatable(args[i2]) ~= nil then continue end
+	        	if type(v2) == "string" and type(args[i2]) == "string" and v2 == args[i2] then
+	        		return backup(self,...)
+	        	end
+	        end
+	    end
         local DebugTable = {}
         local upvals = {}
         for i,v in pairs(debug.getupvalues(3)) do
@@ -3566,21 +3580,22 @@ mt.__namecall = newcclosure(function(self,...)
         	end
         end
         local cons = {}
-        for i,v in pairs(debug.getconstants(3)) do
-        	if (typeof(v) == "table" or typeof(v) == "userdata") and getrawmetatable(v) ~= {} then
-        		if typeof(v) == "userdata" then
-        			upvals[i] = newproxy(false)
-        		else
-        			local new_protected_table = {}
-        			for i2,v2 in pairs(v) do
-        				if i2 == "__index" or i2 == "__newindex" or i2 == "__tostring" then continue end
-        				new_protected_table[i2] = v2
-        			end
-        		end
-        	else
-        		upvals[i] = v
-        	end
-        end
+	    for i,v in pairs(debug.getconstants(3)) do
+	    	if (typeof(v) == "table" or typeof(v) == "userdata") and getrawmetatable(v) ~= {} then
+	    		if typeof(v) == "userdata" then
+	    			cons[i] = newproxy(false)
+	    		else
+	    			local new_protected_table = {}
+	    			for i2,v2 in pairs(v) do
+	    				if i2 == "__index" or i2 == "__newindex" or i2 == "__tostring" then continue end
+	    				new_protected_table[i2] = v2
+	    			end
+	    			cons[i] = new_protected_table
+	    		end
+	    	else
+	    		cons[i] = v
+	    	end
+	    end
         DebugTable = {
             ["Name"] = tostring(getcallingfunction(3)),
             ["Function"] = getcallingfunction(3),
@@ -3607,8 +3622,8 @@ mt.__namecall = newcclosure(function(self,...)
     DebugTable = {
         ["Name"] = tostring(getcallingfunction(3)),
         ["Function"] = getcallingfunction(3),
-        ["Upvalues"] = debug.getupvalues(3),
-        ["Constants"] = debug.getconstants(3)
+        ["Upvalues"] = upvals,
+        ["Constants"] = cons
     }
     local scr = getfenv(3)["script"]
     local Stuff = {
