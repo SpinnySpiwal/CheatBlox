@@ -235,8 +235,6 @@ local RemotesShadow = Instance.new("TextLabel")
 local Namecall = Instance.new("TextButton")
 local NamecallShadow = Instance.new("TextLabel")
 local DebugShadow = Instance.new("TextLabel")
-local Decompile = Instance.new("TextButton")
-local DecompileShadow = Instance.new("TextLabel")
 local Debug = Instance.new("TextButton")
 local Clear = Instance.new("TextButton")
 local UpScan = Instance.new("TextButton")
@@ -270,8 +268,6 @@ local IgnoreIndCallShadow = Instance.new("TextLabel")
 local UnSpyScriptShadow = Instance.new("TextLabel")
 local IgnoreRemoteCall = Instance.new("TextButton")
 local IgnoreRemoteShadow = Instance.new("TextLabel")
-local DecompilerFrame = Instance.new("Frame")
-local DecompilerText = Instance.new("TextBox")
 local RemotesFrame = Instance.new("Frame")
 local RemotesList = Instance.new("ScrollingFrame")
 local Overlay = Instance.new("Frame")
@@ -327,7 +323,6 @@ grad:Clone().Parent = MainFrame
 grad:Clone().Parent = HomeFrame
 grad:Clone().Parent = RemoteSpyFrame
 grad:Clone().Parent = ScriptSpyFrame
-grad:Clone().Parent = DecompilerFrame
 grad:Clone().Parent = RemotesFrame
 grad:Clone().Parent = NamecallFrame
 grad:Clone().Parent = DebugFrame
@@ -548,30 +543,6 @@ DebugShadow.TextScaled = true
 DebugShadow.TextSize = 14
 DebugShadow.TextWrapped = true
 DebugShadow.ZIndex = 10000000 - 1
-Decompile.Name = "Decompile"
-Decompile.Parent = ButtonsFrame
-Decompile.BackgroundTransparency = 1
-Decompile.Position = UDim2.new(0, 0, 0, 150)
-Decompile.Size = UDim2.new(1, 0, 0, 30)
-Decompile.AutoButtonColor = false
-Decompile.Text = "Decompile"
-Decompile.TextColor3 = Color3.new(1, 1, 1)
-Decompile.TextScaled = true
-Decompile.TextSize = 14
-Decompile.TextWrapped = true
-Decompile.ZIndex = 10000000
-DecompileShadow.Name = "DecompileShadow"
-DecompileShadow.Parent = ButtonsFrame
-DecompileShadow.BackgroundTransparency = 1
-DecompileShadow.Position = UDim2.new(0, 3, 0, 153)
-DecompileShadow.Size = UDim2.new(1, 0, 0, 30)
-DecompileShadow.ZIndex = 0
-DecompileShadow.Text = "Decompile"
-DecompileShadow.TextColor3 = Color3.new(0, 0, 0)
-DecompileShadow.TextScaled = true
-DecompileShadow.TextSize = 14
-DecompileShadow.TextWrapped = true
-DecompileShadow.ZIndex = 10000000 - 1
 Debug.Name = "Debug"
 Debug.Parent = ButtonsFrame
 Debug.BackgroundTransparency = 1
@@ -692,14 +663,13 @@ NewsText.BackgroundTransparency = 1
 NewsText.Size = UDim2.new(1, 0, 1, 0)
 NewsText.Text = [[
 F8 to hide/show GUI
+F6 to min/max GUI
 
 Changelog:
 
-[+] CheatBlox will now replace stuff like
-game:GetService("Players").ROBLOX.PlayerGui with
-game:GetService("Players").LocalPlayer.PlayerGui.
-Applies to character aswell.
-[*] Fixed nil arguments.
+[*] Fixed button colors.
+[-] Removed decompile frame, will
+add something else later.
 
 My Discord: Stefan#6965
 My Discord Server Code: cRsEhnFqsW
@@ -916,27 +886,6 @@ IgnoreRemoteShadow.TextColor3 = Color3.new(0, 0, 0)
 IgnoreRemoteShadow.TextScaled = true
 IgnoreRemoteShadow.TextSize = 14
 IgnoreRemoteShadow.TextWrapped = true
-DecompilerFrame.Name = "DecompilerFrame"
-DecompilerFrame.Parent = MainFrame
-DecompilerFrame.BackgroundColor3 = COLOR_SCHEME
-DecompilerFrame.BorderSizePixel = 0
-DecompilerFrame.Size = UDim2.new(1, 0, 1, 0)
-DecompilerFrame.Visible = false
-DecompilerText.Name = "DecompilerText"
-DecompilerText.Parent = DecompilerFrame
-DecompilerText.BackgroundColor3 = Color3.fromRGB(COLOR_SCHEME_RAW[1]-20,COLOR_SCHEME_RAW[2]-20,COLOR_SCHEME_RAW[3]-20)
-DecompilerText.BorderSizePixel = 2
-DecompilerText.BorderColor3 = Color3.fromRGB(COLOR_SCHEME_RAW[1]-30,COLOR_SCHEME_RAW[2]-30,COLOR_SCHEME_RAW[3]-30)
-DecompilerText.Size = UDim2.new(1, 0, 1, 0)
-DecompilerText.ClearTextOnFocus = false
-DecompilerText.MultiLine = true
-DecompilerText.PlaceholderColor3 = Color3.new(0.698039, 0.698039, 0.698039)
-DecompilerText.PlaceholderText = "--// Decompiled Script Here"
-DecompilerText.Text = ""
-DecompilerText.TextColor3 = Color3.new(1, 1, 1)
-DecompilerText.TextSize = 20
-DecompilerText.TextXAlignment = Enum.TextXAlignment.Left
-DecompilerText.TextYAlignment = Enum.TextYAlignment.Top
 RemotesFrame.Name = "RemotesFrame"
 RemotesFrame.Parent = MainFrame
 RemotesFrame.BackgroundColor3 = COLOR_SCHEME
@@ -1314,10 +1263,11 @@ PrevValLabel.ZIndex = 0
 --// Scripting //--
 
 local GUI_OPENED = true
+local GUI_MAX = true
+local yo_chill = false
 local UserInputService = game:GetService("UserInputService")
 local ts = game:GetService("TweenService")
 local OptionsOpened = false
-local ToDecompile
 local Debugs = {}
 local IgnoredRemotes = {}
 local SpiedScripts = {}
@@ -1334,6 +1284,8 @@ local BlackOpenTween = ts:Create(Darkness,TweenInfo.new(0.5,Enum.EasingStyle.Qua
 local BlackCloseTween = ts:Create(Darkness,TweenInfo.new(0.5,Enum.EasingStyle.Quart,Enum.EasingDirection.Out,0,false,0),{["Size"] = UDim2.new(1,0,1,0)})
 local MainOpenTween = ts:Create(AllFrame,TweenInfo.new(0.5,Enum.EasingStyle.Quart,Enum.EasingDirection.Out,0,false,0),{["Position"] = UDim2.new(0.5,0,0.5,0)})
 local MainCloseTween = ts:Create(AllFrame,TweenInfo.new(0.5,Enum.EasingStyle.Quart,Enum.EasingDirection.Out,0,false,0),{["Position"] = UDim2.new(0.5,0,2,0)})
+local MainCollapseTween = ts:Create(MainFrame,TweenInfo.new(0.5,Enum.EasingStyle.Quart,Enum.EasingDirection.Out,0,false,0),{["Position"] = UDim2.new(0,0,-1,0)})
+local MainDecollapseTween = ts:Create(MainFrame,TweenInfo.new(0.5,Enum.EasingStyle.Quart,Enum.EasingDirection.Out,0,false,0),{["Position"] = UDim2.new(0,0,1,0)})
 local button_options
 button_options = {
 	["Fire Remote"] = {
@@ -1968,7 +1920,11 @@ local function GetOptions(button)
 	return button_options[button]
 end
 UserInputService.InputBegan:Connect(function(Tinfo,bool)
-    if not bool and Tinfo.KeyCode == Enum.KeyCode.F8 then
+	if bool then return end
+	if yo_chill then return end
+	print("hmm")
+    if Tinfo.KeyCode == Enum.KeyCode.F8 then
+    	yo_chill = true
         if GUI_OPENED then
             GUI_OPENED = false
             MainCloseTween:Play()
@@ -1976,6 +1932,33 @@ UserInputService.InputBegan:Connect(function(Tinfo,bool)
             GUI_OPENED = true
             MainOpenTween:Play()
         end
+        spawn(function()
+        	wait(0.5)
+        	yo_chill = false
+        end)
+    end
+    if Tinfo.KeyCode == Enum.KeyCode.F6 then
+    	print("yeet")
+    	yo_chill = true
+        if GUI_MAX then
+            GUI_MAX = false
+            MainCollapseTween:Play()
+            wait(0.3)
+            MainFrame.Visible = false
+            ts:Create(AllFrame,TweenInfo.new(0.5,Enum.EasingStyle.Quart,Enum.EasingDirection.Out,0,false,0),{["Size"] = UDim2.new(0,850,0,40),["Position"] = AllFrame.Position - UDim2.new(0,0,0,(370-40)/2)}):Play()
+            wait(0.5)
+        else
+            GUI_MAX = true
+            ts:Create(AllFrame,TweenInfo.new(0.5,Enum.EasingStyle.Quart,Enum.EasingDirection.Out,0,false,0),{["Size"] = UDim2.new(0,850,0,370),["Position"] = AllFrame.Position + UDim2.new(0,0,0,(370-40)/2)}):Play()
+            wait(0.3)
+            MainFrame.Visible = true
+            MainDecollapseTween:Play()
+            wait(0.5)
+        end
+        spawn(function()
+        	wait(0.5)
+        	yo_chill = false
+        end)
     end
 end)
 Options.MouseButton1Click:Connect(function()
@@ -2292,7 +2275,6 @@ local function ChangeFrame(frm)
     HomeFrame.Visible = false
     DebugFrame.Visible = false
     RemotesFrame.Visible = false
-    DecompilerFrame.Visible = false
     NamecallFrame.Visible = false
     RemoteSpyFrame.Visible = false
     ScriptSpyFrame.Visible = false
@@ -3437,7 +3419,6 @@ local OnRemote = function(MAIN_INFO)
             RemoteSpyText.Text = (IsHidden and "--// Hidden\n"..ToScript) or ToScript
             SelectedRemote = LastRemote
             SelectedRemoteArgs = args
-            ToDecompile = scr
         end)
 		new.MouseButton2Click:Connect(function()
 			ClickSound2:Play()
@@ -3521,7 +3502,6 @@ local OnScript = function(MAIN_INFO)
             	SelectedRemote = "__newindex"
             end
             SelectedRemoteArgs = {tostring(Self),tostring(Index)}
-            ToDecompile = scr
         end)
         new.MouseButton2Click:Connect(function()
 			ClickSound2:Play()
@@ -3961,11 +3941,13 @@ local dragStart
 local startPos
 
 local function update(input)
+	if yo_chill then return end
 	local delta = input.Position - dragStart
 	AllFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
 end
 
 AllFrame.InputBegan:Connect(function(input)
+	if yo_chill then return end
 	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 		dragging = true
 		dragStart = input.Position
@@ -3980,12 +3962,14 @@ AllFrame.InputBegan:Connect(function(input)
 end)
 
 AllFrame.InputChanged:Connect(function(input)
+	if yo_chill then return end
 	if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
 		dragInput = input
 	end
 end)
 
 UserInputService.InputChanged:Connect(function(input)
+	if yo_chill then return end
 	if input == dragInput and dragging then
 		update(input)
 	end
