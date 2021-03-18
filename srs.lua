@@ -1,6 +1,12 @@
 repeat wait() until game and workspace and game:IsLoaded()
 if game:GetService("CoreGui"):FindFirstChild("SRS") then return end
 local LP = game:GetService("Players").LocalPlayer
+for i,v in pairs(getconnections(game:GetService("ScriptContext").Error)) do
+    v:Disable()
+end
+for i,v in pairs(getconnections(game:GetService("LogService").MessageOut)) do
+    v:Disable()
+end
 local SRS = Instance.new("ScreenGui")
 SRS.Name = "SRS"
 SRS.ResetOnSpawn = false
@@ -1575,14 +1581,21 @@ button_options = {
 										return
 									end
 								end
-								table.insert(DarkButtons,thingo)
-								thingo.TextColor3 = Color3.new(thingo.TextColor3.R-0.4,thingo.TextColor3.G-0.4,thingo.TextColor3.B-0.4)
+								table.insert(DarkButtons,{thingo,thingo.TextColor3})
+								local colors = {thingo.TextColor3.R-0.4,thingo.TextColor3.G-0.4,thingo.TextColor3.B-0.4}
+								for i,v in pairs(colors) do
+									if v < 0 then
+										colors[i] = 0
+									end
+								end
+								thingo.TextColor3 = Color3.new(unpack(colors))
 							end)
 							thingo.MouseLeave:Connect(function()
-								thingo.TextColor3 = Color3.new(thingo.TextColor3.R+0.4,thingo.TextColor3.G+0.4,thingo.TextColor3.B+0.4)
 								for i,v in pairs(DarkButtons) do
-									if v == thingo then
+									if v[1] == thingo then
+										thingo.TextColor3 = v[2]
 										table.remove(DarkButtons,i)
+										break
 									end
 								end
 							end)
@@ -1621,14 +1634,21 @@ button_options = {
 											return
 										end
 									end
-									table.insert(DarkButtons,thingo)
-									thingo.TextColor3 = Color3.new(thingo.TextColor3.R-0.4,thingo.TextColor3.G-0.4,thingo.TextColor3.B-0.4)
+									table.insert(DarkButtons,{thingo,thingo.TextColor3})
+									local colors = {thingo.TextColor3.R-0.4,thingo.TextColor3.G-0.4,thingo.TextColor3.B-0.4}
+									for i,v in pairs(colors) do
+										if v < 0 then
+											colors[i] = 0
+										end
+									end
+									thingo.TextColor3 = Color3.new(unpack(colors))
 								end)
 								thingo.MouseLeave:Connect(function()
-									thingo.TextColor3 = Color3.new(thingo.TextColor3.R+0.4,thingo.TextColor3.G+0.4,thingo.TextColor3.B+0.4)
 									for i,v in pairs(DarkButtons) do
-										if v == thingo then
+										if v[1] == thingo then
+											thingo.TextColor3 = v[2]
 											table.remove(DarkButtons,i)
+											break
 										end
 									end
 								end)
@@ -1667,14 +1687,21 @@ button_options = {
 										return
 									end
 								end
-								table.insert(DarkButtons,thingo)
-								thingo.TextColor3 = Color3.new(thingo.TextColor3.R-0.4,thingo.TextColor3.G-0.4,thingo.TextColor3.B-0.4)
+								table.insert(DarkButtons,{thingo,thingo.TextColor3})
+								local colors = {thingo.TextColor3.R-0.4,thingo.TextColor3.G-0.4,thingo.TextColor3.B-0.4}
+								for i,v in pairs(colors) do
+									if v < 0 then
+										colors[i] = 0
+									end
+								end
+								thingo.TextColor3 = Color3.new(unpack(colors))
 							end)
 							thingo.MouseLeave:Connect(function()
-								thingo.TextColor3 = Color3.new(thingo.TextColor3.R+0.4,thingo.TextColor3.G+0.4,thingo.TextColor3.B+0.4)
 								for i,v in pairs(DarkButtons) do
-									if v == thingo then
+									if v[1] == thingo then
+										thingo.TextColor3 = v[2]
 										table.remove(DarkButtons,i)
+										break
 									end
 								end
 							end)
@@ -1690,14 +1717,21 @@ button_options = {
 							return
 						end
 					end
-					table.insert(DarkButtons,newfunc)
-					newfunc.TextColor3 = Color3.new(newfunc.TextColor3.R-0.4,newfunc.TextColor3.G-0.4,newfunc.TextColor3.B-0.4)
+					table.insert(DarkButtons,{newfunc,newfunc.TextColor3})
+					local colors = {newfunc.TextColor3.R-0.4,newfunc.TextColor3.G-0.4,newfunc.TextColor3.B-0.4}
+					for i,v in pairs(colors) do
+						if v < 0 then
+							colors[i] = 0
+						end
+					end
+					newfunc.TextColor3 = Color3.new(unpack(colors))
 				end)
 				newfunc.MouseLeave:Connect(function()
-					newfunc.TextColor3 = Color3.new(newfunc.TextColor3.R+0.4,newfunc.TextColor3.G+0.4,newfunc.TextColor3.B+0.4)
 					for i,v in pairs(DarkButtons) do
-						if v == newfunc then
+						if v[1] == newfunc then
+							newfunc.TextColor3 = v[2]
 							table.remove(DarkButtons,i)
+							break
 						end
 					end
 				end)
@@ -1767,14 +1801,21 @@ button_options = {
 										return
 									end
 								end
-								table.insert(DarkButtons,thingo)
-								thingo.TextColor3 = Color3.new(thingo.TextColor3.R-0.4,thingo.TextColor3.G-0.4,thingo.TextColor3.B-0.4)
+								table.insert(DarkButtons,{thingo,thingo.TextColor3})
+								local colors = {thingo.TextColor3.R-0.4,thingo.TextColor3.G-0.4,thingo.TextColor3.B-0.4}
+								for i,v in pairs(colors) do
+									if v < 0 then
+										colors[i] = 0
+									end
+								end
+								thingo.TextColor3 = Color3.new(unpack(colors))
 							end)
 							thingo.MouseLeave:Connect(function()
-								thingo.TextColor3 = Color3.new(thingo.TextColor3.R+0.4,thingo.TextColor3.G+0.4,thingo.TextColor3.B+0.4)
 								for i,v in pairs(DarkButtons) do
-									if v == thingo then
+									if v[1] == thingo then
+										thingo.TextColor3 = v[2]
 										table.remove(DarkButtons,i)
+										break
 									end
 								end
 							end)
@@ -1813,14 +1854,21 @@ button_options = {
 											return
 										end
 									end
-									table.insert(DarkButtons,thingo)
-									thingo.TextColor3 = Color3.new(thingo.TextColor3.R-0.4,thingo.TextColor3.G-0.4,thingo.TextColor3.B-0.4)
+									table.insert(DarkButtons,{thingo,thingo.TextColor3})
+									local colors = {thingo.TextColor3.R-0.4,thingo.TextColor3.G-0.4,thingo.TextColor3.B-0.4}
+									for i,v in pairs(colors) do
+										if v < 0 then
+											colors[i] = 0
+										end
+									end
+									thingo.TextColor3 = Color3.new(unpack(colors))
 								end)
 								thingo.MouseLeave:Connect(function()
-									thingo.TextColor3 = Color3.new(thingo.TextColor3.R+0.4,thingo.TextColor3.G+0.4,thingo.TextColor3.B+0.4)
 									for i,v in pairs(DarkButtons) do
-										if v == thingo then
+										if v[1] == thingo then
+											thingo.TextColor3 = v[2]
 											table.remove(DarkButtons,i)
+											break
 										end
 									end
 								end)
@@ -1859,14 +1907,21 @@ button_options = {
 										return
 									end
 								end
-								table.insert(DarkButtons,thingo)
-								thingo.TextColor3 = Color3.new(thingo.TextColor3.R-0.4,thingo.TextColor3.G-0.4,thingo.TextColor3.B-0.4)
+								table.insert(DarkButtons,{thingo,thingo.TextColor3})
+								local colors = {thingo.TextColor3.R-0.4,thingo.TextColor3.G-0.4,thingo.TextColor3.B-0.4}
+								for i,v in pairs(colors) do
+									if v < 0 then
+										colors[i] = 0
+									end
+								end
+								thingo.TextColor3 = Color3.new(unpack(colors))
 							end)
 							thingo.MouseLeave:Connect(function()
-								thingo.TextColor3 = Color3.new(thingo.TextColor3.R+0.4,thingo.TextColor3.G+0.4,thingo.TextColor3.B+0.4)
 								for i,v in pairs(DarkButtons) do
-									if v == thingo then
+									if v[1] == thingo then
+										thingo.TextColor3 = v[2]
 										table.remove(DarkButtons,i)
+										break
 									end
 								end
 							end)
@@ -1882,14 +1937,21 @@ button_options = {
 							return
 						end
 					end
-					table.insert(DarkButtons,newfunc)
-					newfunc.TextColor3 = Color3.new(newfunc.TextColor3.R-0.4,newfunc.TextColor3.G-0.4,newfunc.TextColor3.B-0.4)
+					table.insert(DarkButtons,{newfunc,newfunc.TextColor3})
+					local colors = {newfunc.TextColor3.R-0.4,newfunc.TextColor3.G-0.4,newfunc.TextColor3.B-0.4}
+					for i,v in pairs(colors) do
+						if v < 0 then
+							colors[i] = 0
+						end
+					end
+					newfunc.TextColor3 = Color3.new(unpack(colors))
 				end)
 				newfunc.MouseLeave:Connect(function()
-					newfunc.TextColor3 = Color3.new(newfunc.TextColor3.R+0.4,newfunc.TextColor3.G+0.4,newfunc.TextColor3.B+0.4)
 					for i,v in pairs(DarkButtons) do
-						if v == newfunc then
+						if v[1] == newfunc then
+							newfunc.TextColor3 = v[2]
 							table.remove(DarkButtons,i)
+							break
 						end
 					end
 				end)
@@ -1936,14 +1998,21 @@ Options.MouseEnter:Connect(function()
 			return
 		end
 	end
-	table.insert(DarkButtons,Options)
-	Options.TextColor3 = Color3.new(Options.TextColor3.R-0.4,Options.TextColor3.G-0.4,Options.TextColor3.B-0.4)
+	table.insert(DarkButtons,{Options,Options.TextColor3})
+	local colors = {Options.TextColor3.R-0.4,Options.TextColor3.G-0.4,Options.TextColor3.B-0.4}
+	for i,v in pairs(colors) do
+		if v < 0 then
+			colors[i] = 0
+		end
+	end
+	Options.TextColor3 = Color3.new(unpack(colors))
 end)
 Options.MouseLeave:Connect(function()
-	Options.TextColor3 = Color3.new(Options.TextColor3.R+0.4,Options.TextColor3.G+0.4,Options.TextColor3.B+0.4)
 	for i,v in pairs(DarkButtons) do
-		if v == Options then
+		if v[1] == Options then
+			Options.TextColor3 = v[2]
 			table.remove(DarkButtons,i)
+			break
 		end
 	end
 end)
@@ -2091,14 +2160,21 @@ UpdateRemotes = function()
 							return
 						end
 					end
-					table.insert(DarkButtons,new)
-					new.TextColor3 = Color3.new(new.TextColor3.R-0.4,new.TextColor3.G-0.4,new.TextColor3.B-0.4)
+					table.insert(DarkButtons,{new,new.TextColor3})
+					local colors = {new.TextColor3.R-0.4,new.TextColor3.G-0.4,new.TextColor3.B-0.4}
+					for i,v in pairs(colors) do
+						if v < 0 then
+							colors[i] = 0
+						end
+					end
+					new.TextColor3 = Color3.new(unpack(colors))
 				end)
 				new.MouseLeave:Connect(function()
-					new.TextColor3 = Color3.new(new.TextColor3.R+0.4,new.TextColor3.G+0.4,new.TextColor3.B+0.4)
 					for i,v in pairs(DarkButtons) do
-						if v == new then
+						if v[1] == new then
+							new.TextColor3 = v[2]
 							table.remove(DarkButtons,i)
+							break
 						end
 					end
 				end)
@@ -2138,14 +2214,21 @@ UpdateRemotes = function()
 							return
 						end
 					end
-					table.insert(DarkButtons,new)
-					new.TextColor3 = Color3.new(new.TextColor3.R-0.4,new.TextColor3.G-0.4,new.TextColor3.B-0.4)
+					table.insert(DarkButtons,{new,new.TextColor3})
+					local colors = {new.TextColor3.R-0.4,new.TextColor3.G-0.4,new.TextColor3.B-0.4}
+					for i,v in pairs(colors) do
+						if v < 0 then
+							colors[i] = 0
+						end
+					end
+					new.TextColor3 = Color3.new(unpack(colors))
 				end)
 				new.MouseLeave:Connect(function()
-					new.TextColor3 = Color3.new(new.TextColor3.R+0.4,new.TextColor3.G+0.4,new.TextColor3.B+0.4)
 					for i,v in pairs(DarkButtons) do
-						if v == new then
+						if v[1] == new then
+							new.TextColor3 = v[2]
 							table.remove(DarkButtons,i)
+							break
 						end
 					end
 				end)
@@ -2177,23 +2260,30 @@ local function UpdateNamecalls()
             TweenButtonPress(new)
         end)
         new.MouseEnter:Connect(function()
-					EnterSound:Play()
-					for i,v in pairs(DarkButtons) do
-						if v == new then
-							return
-						end
-					end
-					table.insert(DarkButtons,new)
-					new.TextColor3 = Color3.new(new.TextColor3.R-0.4,new.TextColor3.G-0.4,new.TextColor3.B-0.4)
-				end)
-				new.MouseLeave:Connect(function()
-					new.TextColor3 = Color3.new(new.TextColor3.R+0.4,new.TextColor3.G+0.4,new.TextColor3.B+0.4)
-					for i,v in pairs(DarkButtons) do
-						if v == new then
-							table.remove(DarkButtons,i)
-						end
-					end
-				end)
+			EnterSound:Play()
+			for i,v in pairs(DarkButtons) do
+				if v == new then
+					return
+				end
+			end
+			table.insert(DarkButtons,{new,new.TextColor3})
+			local colors = {new.TextColor3.R-0.4,new.TextColor3.G-0.4,new.TextColor3.B-0.4}
+			for i,v in pairs(colors) do
+				if v < 0 then
+					colors[i] = 0
+				end
+			end
+			new.TextColor3 = Color3.new(unpack(colors))
+		end)
+		new.MouseLeave:Connect(function()
+			for i,v in pairs(DarkButtons) do
+				if v[1] == new then
+					new.TextColor3 = v[2]
+					table.remove(DarkButtons,i)
+					break
+				end
+			end
+		end)
         new.Parent = NamecallLogsList
     end
 end
@@ -2232,14 +2322,21 @@ Clear.MouseEnter:Connect(function()
 			return
 		end
 	end
-	table.insert(DarkButtons,Clear)
-	Clear.TextColor3 = Color3.new(Clear.TextColor3.R-0.4,Clear.TextColor3.G-0.4,Clear.TextColor3.B-0.4)
+	table.insert(DarkButtons,{Clear,Clear.TextColor3})
+	local colors = {Clear.TextColor3.R-0.4,Clear.TextColor3.G-0.4,Clear.TextColor3.B-0.4}
+	for i,v in pairs(colors) do
+		if v < 0 then
+			colors[i] = 0
+		end
+	end
+	Clear.TextColor3 = Color3.new(unpack(colors))
 end)
 Clear.MouseLeave:Connect(function()
-	Clear.TextColor3 = Color3.new(Clear.TextColor3.R+0.4,Clear.TextColor3.G+0.4,Clear.TextColor3.B+0.4)
 	for i,v in pairs(DarkButtons) do
-		if v == Clear then
+		if v[1] == Clear then
+			Clear.TextColor3 = v[2]
 			table.remove(DarkButtons,i)
+			break
 		end
 	end
 end)
@@ -2281,14 +2378,21 @@ SearchButton.MouseButton1Click:Connect(function()
 									return
 								end
 							end
-							table.insert(DarkButtons,newfunc)
-							newfunc.TextColor3 = Color3.new(newfunc.TextColor3.R-0.4,newfunc.TextColor3.G-0.4,newfunc.TextColor3.B-0.4)
+							table.insert(DarkButtons,{newfunc,newfunc.TextColor3})
+							local colors = {newfunc.TextColor3.R-0.4,newfunc.TextColor3.G-0.4,newfunc.TextColor3.B-0.4}
+							for i,v in pairs(colors) do
+								if v < 0 then
+									colors[i] = 0
+								end
+							end
+							newfunc.TextColor3 = Color3.new(unpack(colors))
 						end)
 						newfunc.MouseLeave:Connect(function()
-							newfunc.TextColor3 = Color3.new(newfunc.TextColor3.R+0.4,newfunc.TextColor3.G+0.4,newfunc.TextColor3.B+0.4)
 							for i,v in pairs(DarkButtons) do
-								if v == newfunc then
+								if v[1] == newfunc then
+									newfunc.TextColor3 = v[2]
 									table.remove(DarkButtons,i)
+									break
 								end
 							end
 						end)
@@ -2328,14 +2432,21 @@ SearchButton.MouseButton1Click:Connect(function()
 									return
 								end
 							end
-							table.insert(DarkButtons,newfunc)
-							newfunc.TextColor3 = Color3.new(newfunc.TextColor3.R-0.4,newfunc.TextColor3.G-0.4,newfunc.TextColor3.B-0.4)
+							table.insert(DarkButtons,{newfunc,newfunc.TextColor3})
+							local colors = {newfunc.TextColor3.R-0.4,newfunc.TextColor3.G-0.4,newfunc.TextColor3.B-0.4}
+							for i,v in pairs(colors) do
+								if v < 0 then
+									colors[i] = 0
+								end
+							end
+							newfunc.TextColor3 = Color3.new(unpack(colors))
 						end)
 						newfunc.MouseLeave:Connect(function()
-							newfunc.TextColor3 = Color3.new(newfunc.TextColor3.R+0.4,newfunc.TextColor3.G+0.4,newfunc.TextColor3.B+0.4)
 							for i,v in pairs(DarkButtons) do
-								if v == newfunc then
+								if v[1] == newfunc then
+									newfunc.TextColor3 = v[2]
 									table.remove(DarkButtons,i)
+									break
 								end
 							end
 						end)
@@ -2377,14 +2488,21 @@ SearchButton.MouseButton1Click:Connect(function()
 									return
 								end
 							end
-							table.insert(DarkButtons,newfunc)
-							newfunc.TextColor3 = Color3.new(newfunc.TextColor3.R-0.4,newfunc.TextColor3.G-0.4,newfunc.TextColor3.B-0.4)
+							table.insert(DarkButtons,{newfunc,newfunc.TextColor3})
+							local colors = {newfunc.TextColor3.R-0.4,newfunc.TextColor3.G-0.4,newfunc.TextColor3.B-0.4}
+							for i,v in pairs(colors) do
+								if v < 0 then
+									colors[i] = 0
+								end
+							end
+							newfunc.TextColor3 = Color3.new(unpack(colors))
 						end)
 						newfunc.MouseLeave:Connect(function()
-							newfunc.TextColor3 = Color3.new(newfunc.TextColor3.R+0.4,newfunc.TextColor3.G+0.4,newfunc.TextColor3.B+0.4)
 							for i,v in pairs(DarkButtons) do
-								if v == newfunc then
+								if v[1] == newfunc then
+									newfunc.TextColor3 = v[2]
 									table.remove(DarkButtons,i)
+									break
 								end
 							end
 						end)
@@ -2470,14 +2588,21 @@ SearchButton.MouseButton1Click:Connect(function()
 										return
 									end
 								end
-								table.insert(DarkButtons,newfunc)
-								newfunc.TextColor3 = Color3.new(newfunc.TextColor3.R-0.4,newfunc.TextColor3.G-0.4,newfunc.TextColor3.B-0.4)
+								table.insert(DarkButtons,{newfunc,newfunc.TextColor3})
+								local colors = {newfunc.TextColor3.R-0.4,newfunc.TextColor3.G-0.4,newfunc.TextColor3.B-0.4}
+								for i,v in pairs(colors) do
+									if v < 0 then
+										colors[i] = 0
+									end
+								end
+								newfunc.TextColor3 = Color3.new(unpack(colors))
 							end)
 							newfunc.MouseLeave:Connect(function()
-								newfunc.TextColor3 = Color3.new(newfunc.TextColor3.R+0.4,newfunc.TextColor3.G+0.4,newfunc.TextColor3.B+0.4)
 								for i,v in pairs(DarkButtons) do
-									if v == newfunc then
+									if v[1] == newfunc then
+										newfunc.TextColor3 = v[2]
 										table.remove(DarkButtons,i)
+										break
 									end
 								end
 							end)
@@ -2508,14 +2633,21 @@ SearchButton.MouseButton1Click:Connect(function()
 										return
 									end
 								end
-								table.insert(DarkButtons,newfunc)
-								newfunc.TextColor3 = Color3.new(newfunc.TextColor3.R-0.4,newfunc.TextColor3.G-0.4,newfunc.TextColor3.B-0.4)
+								table.insert(DarkButtons,{newfunc,newfunc.TextColor3})
+								local colors = {newfunc.TextColor3.R-0.4,newfunc.TextColor3.G-0.4,newfunc.TextColor3.B-0.4}
+								for i,v in pairs(colors) do
+									if v < 0 then
+										colors[i] = 0
+									end
+								end
+								newfunc.TextColor3 = Color3.new(unpack(colors))
 							end)
 							newfunc.MouseLeave:Connect(function()
-								newfunc.TextColor3 = Color3.new(newfunc.TextColor3.R+0.4,newfunc.TextColor3.G+0.4,newfunc.TextColor3.B+0.4)
 								for i,v in pairs(DarkButtons) do
-									if v == newfunc then
+									if v[1] == newfunc then
+										newfunc.TextColor3 = v[2]
 										table.remove(DarkButtons,i)
+										break
 									end
 								end
 							end)
@@ -2592,14 +2724,21 @@ SearchButton.MouseButton1Click:Connect(function()
 											return
 										end
 									end
-									table.insert(DarkButtons,newfunc)
-									newfunc.TextColor3 = Color3.new(newfunc.TextColor3.R-0.4,newfunc.TextColor3.G-0.4,newfunc.TextColor3.B-0.4)
+									table.insert(DarkButtons,{newfunc,newfunc.TextColor3})
+									local colors = {newfunc.TextColor3.R-0.4,newfunc.TextColor3.G-0.4,newfunc.TextColor3.B-0.4}
+									for i,v in pairs(colors) do
+										if v < 0 then
+											colors[i] = 0
+										end
+									end
+									newfunc.TextColor3 = Color3.new(unpack(colors))
 								end)
 								newfunc.MouseLeave:Connect(function()
-									newfunc.TextColor3 = Color3.new(newfunc.TextColor3.R+0.4,newfunc.TextColor3.G+0.4,newfunc.TextColor3.B+0.4)
 									for i,v in pairs(DarkButtons) do
-										if v == newfunc then
+										if v[1] == newfunc then
+											newfunc.TextColor3 = v[2]
 											table.remove(DarkButtons,i)
+											break
 										end
 									end
 								end)
@@ -2621,18 +2760,25 @@ end)
 SearchButton.MouseEnter:Connect(function()
 	EnterSound:Play()
 	for i,v in pairs(DarkButtons) do
-		if v == Clear then
+		if v == SearchButton then
 			return
 		end
 	end
-	table.insert(DarkButtons,Clear)
-	SearchButton.TextColor3 = Color3.new(SearchButton.TextColor3.R-0.4,SearchButton.TextColor3.G-0.4,SearchButton.TextColor3.B-0.4)
+	table.insert(DarkButtons,{SearchButton,SearchButton.TextColor3})
+	local colors = {SearchButton.TextColor3.R-0.4,SearchButton.TextColor3.G-0.4,SearchButton.TextColor3.B-0.4}
+	for i,v in pairs(colors) do
+		if v < 0 then
+			colors[i] = 0
+		end
+	end
+	SearchButton.TextColor3 = Color3.new(unpack(colors))
 end)
 SearchButton.MouseLeave:Connect(function()
-	SearchButton.TextColor3 = Color3.new(SearchButton.TextColor3.R+0.4,SearchButton.TextColor3.G+0.4,SearchButton.TextColor3.B+0.4)
 	for i,v in pairs(DarkButtons) do
-		if v == SearchButton then
+		if v[1] == SearchButton then
+			SearchButton.TextColor3 = v[2]
 			table.remove(DarkButtons,i)
+			break
 		end
 	end
 end)
@@ -2653,44 +2799,21 @@ UpScan.MouseEnter:Connect(function()
 			return
 		end
 	end
-	table.insert(DarkButtons,UpScan)
-	UpScan.TextColor3 = Color3.new(UpScan.TextColor3.R-0.4,UpScan.TextColor3.G-0.4,UpScan.TextColor3.B-0.4)
+	table.insert(DarkButtons,{UpScan,UpScan.TextColor3})
+	local colors = {UpScan.TextColor3.R-0.4,UpScan.TextColor3.G-0.4,UpScan.TextColor3.B-0.4}
+	for i,v in pairs(colors) do
+		if v < 0 then
+			colors[i] = 0
+		end
+	end
+	UpScan.TextColor3 = Color3.new(unpack(colors))
 end)
 UpScan.MouseLeave:Connect(function()
-	UpScan.TextColor3 = Color3.new(UpScan.TextColor3.R+0.4,UpScan.TextColor3.G+0.4,UpScan.TextColor3.B+0.4)
 	for i,v in pairs(DarkButtons) do
-		if v == UpScan then
+		if v[1] == UpScan then
+			UpScan.TextColor3 = v[2]
 			table.remove(DarkButtons,i)
-		end
-	end
-end)
-Decompile.MouseButton1Click:Connect(function()
-	ClickSound:Play()
-	TweenButtonPress(Decompile)
-    if ToDecompile then
-        DecompilerText.Text = decompile(ToDecompile) or "Decompilation Failed"
-        Transition(true)
-        wait(0.3)
-        ChangeFrame(DecompilerFrame)
-        wait(0.3)
-        Transition(false)
-    end
-end)
-Decompile.MouseEnter:Connect(function()
-	EnterSound:Play()
-	for i,v in pairs(DarkButtons) do
-		if v == Decompile then
-			return
-		end
-	end
-	table.insert(DarkButtons,Decompile)
-	Decompile.TextColor3 = Color3.new(Decompile.TextColor3.R-0.4,Decompile.TextColor3.G-0.4,Decompile.TextColor3.B-0.4)
-end)
-Decompile.MouseLeave:Connect(function()
-	Decompile.TextColor3 = Color3.new(Decompile.TextColor3.R+0.4,Decompile.TextColor3.G+0.4,Decompile.TextColor3.B+0.4)
-	for i,v in pairs(DarkButtons) do
-		if v == Decompile then
-			table.remove(DarkButtons,i)
+			break
 		end
 	end
 end)
@@ -2710,14 +2833,21 @@ Home.MouseEnter:Connect(function()
 			return
 		end
 	end
-	table.insert(DarkButtons,Home)
-	Home.TextColor3 = Color3.new(Home.TextColor3.R-0.4,Home.TextColor3.G-0.4,Home.TextColor3.B-0.4)
+	table.insert(DarkButtons,{Home,Home.TextColor3})
+	local colors = {Home.TextColor3.R-0.4,Home.TextColor3.G-0.4,Home.TextColor3.B-0.4}
+	for i,v in pairs(colors) do
+		if v < 0 then
+			colors[i] = 0
+		end
+	end
+	Home.TextColor3 = Color3.new(unpack(colors))
 end)
 Home.MouseLeave:Connect(function()
-	Home.TextColor3 = Color3.new(Home.TextColor3.R+0.4,Home.TextColor3.G+0.4,Home.TextColor3.B+0.4)
 	for i,v in pairs(DarkButtons) do
-		if v == Home then
+		if v[1] == Home then
+			Home.TextColor3 = v[2]
 			table.remove(DarkButtons,i)
+			break
 		end
 	end
 end)
@@ -2738,14 +2868,21 @@ Remotes.MouseEnter:Connect(function()
 			return
 		end
 	end
-	table.insert(DarkButtons,Remotes)
-	Remotes.TextColor3 = Color3.new(Remotes.TextColor3.R-0.4,Remotes.TextColor3.G-0.4,Remotes.TextColor3.B-0.4)
+	table.insert(DarkButtons,{Remotes,Remotes.TextColor3})
+	local colors = {Remotes.TextColor3.R-0.4,Remotes.TextColor3.G-0.4,newRemotes.TextColor3.B-0.4}
+	for i,v in pairs(colors) do
+		if v < 0 then
+			colors[i] = 0
+		end
+	end
+	Remotes.TextColor3 = Color3.new(unpack(colors))
 end)
 Remotes.MouseLeave:Connect(function()
-	Remotes.TextColor3 = Color3.new(Remotes.TextColor3.R+0.4,Remotes.TextColor3.G+0.4,Remotes.TextColor3.B+0.4)
 	for i,v in pairs(DarkButtons) do
-		if v == Remotes then
+		if v[1] == Remotes then
+			Remotes.TextColor3 = v[2]
 			table.remove(DarkButtons,i)
+			break
 		end
 	end
 end)
@@ -2766,14 +2903,21 @@ RemoteSpy.MouseEnter:Connect(function()
 			return
 		end
 	end
-	table.insert(DarkButtons,RemoteSpy)
-	RemoteSpy.TextColor3 = Color3.new(RemoteSpy.TextColor3.R-0.4,RemoteSpy.TextColor3.G-0.4,RemoteSpy.TextColor3.B-0.4)
+	table.insert(DarkButtons,{RemoteSpy,RemoteSpy.TextColor3})
+	local colors = {RemoteSpy.TextColor3.R-0.4,RemoteSpy.TextColor3.G-0.4,RemoteSpy.TextColor3.B-0.4}
+	for i,v in pairs(colors) do
+		if v < 0 then
+			colors[i] = 0
+		end
+	end
+	RemoteSpy.TextColor3 = Color3.new(unpack(colors))
 end)
 RemoteSpy.MouseLeave:Connect(function()
-	RemoteSpy.TextColor3 = Color3.new(RemoteSpy.TextColor3.R+0.4,RemoteSpy.TextColor3.G+0.4,RemoteSpy.TextColor3.B+0.4)
 	for i,v in pairs(DarkButtons) do
-		if v == RemoteSpy then
+		if v[1] == RemoteSpy then
+			RemoteSpy.TextColor3 = v[2]
 			table.remove(DarkButtons,i)
+			break
 		end
 	end
 end)
@@ -2808,14 +2952,21 @@ EnableSrs.MouseEnter:Connect(function()
 			return
 		end
 	end
-	table.insert(DarkButtons,EnableSrs)
-	EnableSrs.TextColor3 = Color3.new(EnableSrs.TextColor3.R-0.4,EnableSrs.TextColor3.G-0.4,EnableSrs.TextColor3.B-0.4)
+	table.insert(DarkButtons,{EnableSrs,EnableSrs.TextColor3})
+	local colors = {EnableSrs.TextColor3.R-0.4,EnableSrs.TextColor3.G-0.4,EnableSrs.TextColor3.B-0.4}
+	for i,v in pairs(colors) do
+		if v < 0 then
+			colors[i] = 0
+		end
+	end
+	EnableSrs.TextColor3 = Color3.new(unpack(colors))
 end)
 EnableSrs.MouseLeave:Connect(function()
-	EnableSrs.TextColor3 = Color3.new(EnableSrs.TextColor3.R+0.4,EnableSrs.TextColor3.G+0.4,EnableSrs.TextColor3.B+0.4)
 	for i,v in pairs(DarkButtons) do
-		if v == EnableSrs then
+		if v[1] == EnableSrs then
+			EnableSrs.TextColor3 = v[2]
 			table.remove(DarkButtons,i)
+			break
 		end
 	end
 end)
@@ -2826,14 +2977,21 @@ ScriptSpy.MouseEnter:Connect(function()
 			return
 		end
 	end
-	table.insert(DarkButtons,ScriptSpy)
-	ScriptSpy.TextColor3 = Color3.new(ScriptSpy.TextColor3.R-0.4,ScriptSpy.TextColor3.G-0.4,ScriptSpy.TextColor3.B-0.4)
+	table.insert(DarkButtons,{ScriptSpy,ScriptSpy.TextColor3})
+	local colors = {ScriptSpy.TextColor3.R-0.4,ScriptSpy.TextColor3.G-0.4,ScriptSpy.TextColor3.B-0.4}
+	for i,v in pairs(colors) do
+		if v < 0 then
+			colors[i] = 0
+		end
+	end
+	ScriptSpy.TextColor3 = Color3.new(unpack(colors))
 end)
 ScriptSpy.MouseLeave:Connect(function()
-	ScriptSpy.TextColor3 = Color3.new(ScriptSpy.TextColor3.R+0.4,ScriptSpy.TextColor3.G+0.4,ScriptSpy.TextColor3.B+0.4)
 	for i,v in pairs(DarkButtons) do
-		if v == ScriptSpy then
+		if v[1] == ScriptSpy then
+			ScriptSpy.TextColor3 = v[2]
 			table.remove(DarkButtons,i)
+			break
 		end
 	end
 end)
@@ -2854,14 +3012,21 @@ Debug.MouseEnter:Connect(function()
 			return
 		end
 	end
-	table.insert(DarkButtons,Debug)
-	Debug.TextColor3 = Color3.new(Debug.TextColor3.R-0.4,Debug.TextColor3.G-0.4,Debug.TextColor3.B-0.4)
+	table.insert(DarkButtons,{Debug,Debug.TextColor3})
+	local colors = {Debug.TextColor3.R-0.4,Debug.TextColor3.G-0.4,Debug.TextColor3.B-0.4}
+	for i,v in pairs(colors) do
+		if v < 0 then
+			colors[i] = 0
+		end
+	end
+	Debug.TextColor3 = Color3.new(unpack(colors))
 end)
 Debug.MouseLeave:Connect(function()
-	Debug.TextColor3 = Color3.new(Debug.TextColor3.R+0.4,Debug.TextColor3.G+0.4,Debug.TextColor3.B+0.4)
 	for i,v in pairs(DarkButtons) do
-		if v == Debug then
+		if v[1] == Debug then
+			Debug.TextColor3 = v[2]
 			table.remove(DarkButtons,i)
+			break
 		end
 	end
 end)
@@ -2882,14 +3047,21 @@ Namecall.MouseEnter:Connect(function()
 			return
 		end
 	end
-	table.insert(DarkButtons,Namecall)
-	Namecall.TextColor3 = Color3.new(Namecall.TextColor3.R-0.4,Namecall.TextColor3.G-0.4,Namecall.TextColor3.B-0.4)
+	table.insert(DarkButtons,{Namecall,Namecall.TextColor3})
+	local colors = {Namecall.TextColor3.R-0.4,Namecall.TextColor3.G-0.4,Namecall.TextColor3.B-0.4}
+	for i,v in pairs(colors) do
+		if v < 0 then
+			colors[i] = 0
+		end
+	end
+	Namecall.TextColor3 = Color3.new(unpack(colors))
 end)
 Namecall.MouseLeave:Connect(function()
-	Namecall.TextColor3 = Color3.new(Namecall.TextColor3.R+0.4,Namecall.TextColor3.G+0.4,Namecall.TextColor3.B+0.4)
 	for i,v in pairs(DarkButtons) do
-		if v == Namecall then
+		if v[1] == Namecall then
+			Namecall.TextColor3 = v[2]
 			table.remove(DarkButtons,i)
+			break
 		end
 	end
 end)
@@ -2914,14 +3086,21 @@ RemoteFire.MouseEnter:Connect(function()
 			return
 		end
 	end
-	table.insert(DarkButtons,RemoteFire)
-	RemoteFire.TextColor3 = Color3.new(RemoteFire.TextColor3.R-0.4,RemoteFire.TextColor3.G-0.4,RemoteFire.TextColor3.B-0.4)
+	table.insert(DarkButtons,{RemoteFire,RemoteFire.TextColor3})
+	local colors = {RemoteFire.TextColor3.R-0.4,RemoteFire.TextColor3.G-0.4,RemoteFire.TextColor3.B-0.4}
+	for i,v in pairs(colors) do
+		if v < 0 then
+			colors[i] = 0
+		end
+	end
+	RemoteFire.TextColor3 = Color3.new(unpack(colors))
 end)
 RemoteFire.MouseLeave:Connect(function()
-	RemoteFire.TextColor3 = Color3.new(RemoteFire.TextColor3.R+0.4,RemoteFire.TextColor3.G+0.4,RemoteFire.TextColor3.B+0.4)
 	for i,v in pairs(DarkButtons) do
-		if v == RemoteFire then
+		if v[1] == RemoteFire then
+			RemoteFire.TextColor3 = v[2]
 			table.remove(DarkButtons,i)
+			break
 		end
 	end
 end)
@@ -2948,14 +3127,21 @@ SpyScript.MouseEnter:Connect(function()
 			return
 		end
 	end
-	table.insert(DarkButtons,SpyScript)
-	SpyScript.TextColor3 = Color3.new(SpyScript.TextColor3.R-0.4,SpyScript.TextColor3.G-0.4,SpyScript.TextColor3.B-0.4)
+	table.insert(DarkButtons,{SpyScript,SpyScript.TextColor3})
+	local colors = {SpyScript.TextColor3.R-0.4,SpyScript.TextColor3.G-0.4,SpyScript.TextColor3.B-0.4}
+	for i,v in pairs(colors) do
+		if v < 0 then
+			colors[i] = 0
+		end
+	end
+	SpyScript.TextColor3 = Color3.new(unpack(colors))
 end)
 SpyScript.MouseLeave:Connect(function()
-	SpyScript.TextColor3 = Color3.new(SpyScript.TextColor3.R+0.4,SpyScript.TextColor3.G+0.4,SpyScript.TextColor3.B+0.4)
 	for i,v in pairs(DarkButtons) do
-		if v == SpyScript then
+		if v[1] == SpyScript then
+			SpyScript.TextColor3 = v[2]
 			table.remove(DarkButtons,i)
+			break
 		end
 	end
 end)
@@ -2981,14 +3167,21 @@ UnSpyScript.MouseEnter:Connect(function()
 			return
 		end
 	end
-	table.insert(DarkButtons,UnSpyScript)
-	UnSpyScript.TextColor3 = Color3.new(UnSpyScript.TextColor3.R-0.4,UnSpyScript.TextColor3.G-0.4,UnSpyScript.TextColor3.B-0.4)
+	table.insert(DarkButtons,{UnSpyScript,UnSpyScript.TextColor3})
+	local colors = {UnSpyScript.TextColor3.R-0.4,UnSpyScript.TextColor3.G-0.4,UnSpyScript.TextColor3.B-0.4}
+	for i,v in pairs(colors) do
+		if v < 0 then
+			colors[i] = 0
+		end
+	end
+	UnSpyScript.TextColor3 = Color3.new(unpack(colors))
 end)
 UnSpyScript.MouseLeave:Connect(function()
-	UnSpyScript.TextColor3 = Color3.new(UnSpyScript.TextColor3.R+0.4,UnSpyScript.TextColor3.G+0.4,UnSpyScript.TextColor3.B+0.4)
 	for i,v in pairs(DarkButtons) do
-		if v == UnSpyScript then
+		if v[1] == UnSpyScript then
+			UnSpyScript.TextColor3 = v[2]
 			table.remove(DarkButtons,i)
+			break
 		end
 	end
 end)
@@ -3005,14 +3198,21 @@ IgnoreRemote.MouseEnter:Connect(function()
 			return
 		end
 	end
-	table.insert(DarkButtons,IgnoreRemote)
-	IgnoreRemote.TextColor3 = Color3.new(IgnoreRemote.TextColor3.R-0.4,IgnoreRemote.TextColor3.G-0.4,IgnoreRemote.TextColor3.B-0.4)
+	table.insert(DarkButtons,{IgnoreRemote,IgnoreRemote.TextColor3})
+	local colors = {IgnoreRemote.TextColor3.R-0.4,IgnoreRemote.TextColor3.G-0.4,IgnoreRemote.TextColor3.B-0.4}
+	for i,v in pairs(colors) do
+		if v < 0 then
+			colors[i] = 0
+		end
+	end
+	IgnoreRemote.TextColor3 = Color3.new(unpack(colors))
 end)
 IgnoreRemote.MouseLeave:Connect(function()
-	IgnoreRemote.TextColor3 = Color3.new(IgnoreRemote.TextColor3.R+0.4,IgnoreRemote.TextColor3.G+0.4,IgnoreRemote.TextColor3.B+0.4)
 	for i,v in pairs(DarkButtons) do
-		if v == IgnoreRemote then
+		if v[1] == IgnoreRemote then
+			IgnoreRemote.TextColor3 = v[2]
 			table.remove(DarkButtons,i)
+			break
 		end
 	end
 end)
@@ -3029,14 +3229,21 @@ IgnoreRemoteCall.MouseEnter:Connect(function()
 			return
 		end
 	end
-	table.insert(DarkButtons,IgnoreRemoteCall)
-	IgnoreRemoteCall.TextColor3 = Color3.new(IgnoreRemoteCall.TextColor3.R-0.4,IgnoreRemoteCall.TextColor3.G-0.4,IgnoreRemoteCall.TextColor3.B-0.4)
+	table.insert(DarkButtons,{IgnoreRemoteCall,IgnoreRemoteCall.TextColor3})
+	local colors = {IgnoreRemoteCall.TextColor3.R-0.4,IgnoreRemoteCall.TextColor3.G-0.4,IgnoreRemoteCall.TextColor3.B-0.4}
+	for i,v in pairs(colors) do
+		if v < 0 then
+			colors[i] = 0
+		end
+	end
+	IgnoreRemoteCall.TextColor3 = Color3.new(unpack(colors))
 end)
 IgnoreRemoteCall.MouseLeave:Connect(function()
-	IgnoreRemoteCall.TextColor3 = Color3.new(IgnoreRemoteCall.TextColor3.R+0.4,IgnoreRemoteCall.TextColor3.G+0.4,IgnoreRemoteCall.TextColor3.B+0.4)
 	for i,v in pairs(DarkButtons) do
-		if v == IgnoreRemoteCall then
+		if v[1] == IgnoreRemoteCall then
+			IgnoreRemoteCall.TextColor3 = v[2]
 			table.remove(DarkButtons,i)
+			break
 		end
 	end
 end)
@@ -3053,14 +3260,21 @@ IgnoreIndCall.MouseEnter:Connect(function()
 			return
 		end
 	end
-	table.insert(DarkButtons,IgnoreIndCall)
-	IgnoreIndCall.TextColor3 = Color3.new(IgnoreIndCall.TextColor3.R-0.4,IgnoreIndCall.TextColor3.G-0.4,IgnoreIndCall.TextColor3.B-0.4)
+	table.insert(DarkButtons,{IgnoreIndCall,IgnoreIndCall.TextColor3})
+	local colors = {IgnoreIndCall.TextColor3.R-0.4,IgnoreIndCall.TextColor3.G-0.4,IgnoreIndCall.TextColor3.B-0.4}
+	for i,v in pairs(colors) do
+		if v < 0 then
+			colors[i] = 0
+		end
+	end
+	IgnoreIndCall.TextColor3 = Color3.new(unpack(colors))
 end)
 IgnoreIndCall.MouseLeave:Connect(function()
-	IgnoreIndCall.TextColor3 = Color3.new(IgnoreIndCall.TextColor3.R+0.4,IgnoreIndCall.TextColor3.G+0.4,IgnoreIndCall.TextColor3.B+0.4)
 	for i,v in pairs(DarkButtons) do
-		if v == IgnoreIndCall then
+		if v[1] == IgnoreIndCall then
+			IgnoreIndCall.TextColor3 = v[2]
 			table.remove(DarkButtons,i)
+			break
 		end
 	end
 end)
@@ -3079,14 +3293,21 @@ EnableNamecall.MouseEnter:Connect(function()
 			return
 		end
 	end
-	table.insert(DarkButtons,EnableNamecall)
-	EnableNamecall.TextColor3 = Color3.new(EnableNamecall.TextColor3.R-0.4,EnableNamecall.TextColor3.G-0.4,EnableNamecall.TextColor3.B-0.4)
+	table.insert(DarkButtons,{EnableNamecall,EnableNamecall.TextColor3})
+	local colors = {EnableNamecall.TextColor3.R-0.4,EnableNamecall.TextColor3.G-0.4,EnableNamecall.TextColor3.B-0.4}
+	for i,v in pairs(colors) do
+		if v < 0 then
+			colors[i] = 0
+		end
+	end
+	EnableNamecall.TextColor3 = Color3.new(unpack(colors))
 end)
 EnableNamecall.MouseLeave:Connect(function()
-	EnableNamecall.TextColor3 = Color3.new(EnableNamecall.TextColor3.R+0.4,EnableNamecall.TextColor3.G+0.4,EnableNamecall.TextColor3.B+0.4)
 	for i,v in pairs(DarkButtons) do
-		if v == EnableNamecall then
+		if v[1] == EnableNamecall then
+			EnableNamecall.TextColor3 = v[2]
 			table.remove(DarkButtons,i)
+			break
 		end
 	end
 end)
@@ -3229,14 +3450,21 @@ local OnRemote = function(MAIN_INFO)
 					return
 				end
 			end
-			table.insert(DarkButtons,new)
-			new.TextColor3 = Color3.new(new.TextColor3.R-0.4,new.TextColor3.G-0.4,new.TextColor3.B-0.4)
+			table.insert(DarkButtons,{new,new.TextColor3})
+			local colors = {new.TextColor3.R-0.4,new.TextColor3.G-0.4,new.TextColor3.B-0.4}
+			for i,v in pairs(colors) do
+				if v < 0 then
+					colors[i] = 0
+				end
+			end
+			new.TextColor3 = Color3.new(unpack(colors))
 		end)
 		new.MouseLeave:Connect(function()
-			new.TextColor3 = Color3.new(new.TextColor3.R+0.4,new.TextColor3.G+0.4,new.TextColor3.B+0.4)
 			for i,v in pairs(DarkButtons) do
-				if v == new then
+				if v[1] == new then
+					new.TextColor3 = v[2]
 					table.remove(DarkButtons,i)
+					break
 				end
 			end
 		end)
@@ -3299,21 +3527,28 @@ local OnScript = function(MAIN_INFO)
 			ClickSound2:Play()
 			RightClick(new,"DebugFunc",DebugTable)
 		end)
-		backup2(new,"MouseEnter"):Connect(function()
+		new.MouseEnter:Connect(function()
 			EnterSound:Play()
 			for i,v in pairs(DarkButtons) do
 				if v == new then
 					return
 				end
 			end
-			table.insert(DarkButtons,new)
-			new.TextColor3 = Color3.new(new.TextColor3.R-0.4,new.TextColor3.G-0.4,new.TextColor3.B-0.4)
+			table.insert(DarkButtons,{new,new.TextColor3})
+			local colors = {new.TextColor3.R-0.4,new.TextColor3.G-0.4,new.TextColor3.B-0.4}
+			for i,v in pairs(colors) do
+				if v < 0 then
+					colors[i] = 0
+				end
+			end
+			new.TextColor3 = Color3.new(unpack(colors))
 		end)
-		backup2(new,"MouseLeave"):Connect(function()
-			new.TextColor3 = Color3.new(new.TextColor3.R+0.4,new.TextColor3.G+0.4,new.TextColor3.B+0.4)
+		new.MouseLeave:Connect(function()
 			for i,v in pairs(DarkButtons) do
-				if v == new then
+				if v[1] == new then
+					new.TextColor3 = v[2]
 					table.remove(DarkButtons,i)
+					break
 				end
 			end
 		end)
