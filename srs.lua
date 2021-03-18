@@ -662,11 +662,9 @@ NewsText.Parent = HomeFrame
 NewsText.BackgroundTransparency = 1
 NewsText.Size = UDim2.new(1, 0, 1, 0)
 NewsText.Text = [[
-F8 to hide/show GUI
-F6 to min/max GUI
+F8 = hide/show; F6 = min/max
 
 Changelog:
-
 [*] Fixed button colors.
 [-] Removed decompile frame, will
 add something else later.
