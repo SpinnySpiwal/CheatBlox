@@ -2849,7 +2849,7 @@ Remotes.MouseEnter:Connect(function()
 		end
 	end
 	table.insert(DarkButtons,{Remotes,Remotes.TextColor3})
-	local colors = {Remotes.TextColor3.R-0.4,Remotes.TextColor3.G-0.4,newRemotes.TextColor3.B-0.4}
+	local colors = {Remotes.TextColor3.R-0.4,Remotes.TextColor3.G-0.4,Remotes.TextColor3.B-0.4}
 	for i,v in pairs(colors) do
 		if v < 0 then
 			colors[i] = 0
