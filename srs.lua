@@ -8,7 +8,7 @@ for i,v in pairs(getconnections(game:GetService("LogService").MessageOut)) do
     v:Disable()
 end
 local SRS = Instance.new("ScreenGui")
-SRS.Name = "SRS"
+SRS.Name = syn.crypt.hash(tostring(math.random(0,10000)))
 SRS.ResetOnSpawn = false
 local run_sv = game:GetService("RunService")
 local DarkButtons = {}
@@ -19,16 +19,9 @@ local COLOR_SCHEME_OPTIONS = {
 	["green"] = {90,180,90}
 }
 local SRS_ENABLED = true
-local COLOR_SCHEME
-local COLOR_SCHEME_RAW
-if type(_G.SRS_COLOR) == "string" and type(COLOR_SCHEME_OPTIONS[_G.SRS_COLOR]) == "table" then
-	COLOR_SCHEME = Color3.fromRGB(COLOR_SCHEME_OPTIONS[_G.SRS_COLOR][1],COLOR_SCHEME_OPTIONS[_G.SRS_COLOR][2],COLOR_SCHEME_OPTIONS[_G.SRS_COLOR][3])
-	COLOR_SCHEME_RAW = COLOR_SCHEME_OPTIONS[_G.SRS_COLOR]
-else
-	COLOR_SCHEME = Color3.fromRGB(COLOR_SCHEME_OPTIONS["gray"][1],COLOR_SCHEME_OPTIONS["gray"][2],COLOR_SCHEME_OPTIONS["gray"][3])
-	COLOR_SCHEME_RAW = COLOR_SCHEME_OPTIONS["gray"]
-end
-
+if not _G.SRS_COLOR then _G.SRS_COLOR = "gray" end
+local COLOR_SCHEME = Color3.fromRGB(COLOR_SCHEME_OPTIONS[_G.SRS_COLOR][1],COLOR_SCHEME_OPTIONS[_G.SRS_COLOR][2],COLOR_SCHEME_OPTIONS[_G.SRS_COLOR][3])
+local COLOR_SCHEME_RAW = COLOR_SCHEME_OPTIONS[_G.SRS_COLOR]
 --// Support //--
 
 local getcallingfunction = function(stack)
@@ -208,6 +201,16 @@ local AllFrame
 AllFrame = Instance.new("Frame")
 local grad = Instance.new("UIGradient")
 grad.Rotation = 90
+local colors85 = {}
+for i,v in pairs(COLOR_SCHEME_RAW) do
+	colors85[i] = v
+end
+for i,v in pairs(colors85) do
+	colors85[i] = v-100
+	if colors85[i] < 0 then
+		colors85[i] = 0
+	end
+end
 local points = {
 	ColorSequenceKeypoint.new(0,Color3.fromRGB(255,255,255)),
 	ColorSequenceKeypoint.new(1,Color3.fromRGB(100,100,100))
@@ -226,6 +229,7 @@ local Options = Instance.new("TextButton")
 local OptionsShadow = Instance.new("TextLabel")
 local MainFrame = Instance.new("Frame")
 local ButtonsFrame = Instance.new("Frame")
+grad:Clone().Parent = ButtonsFrame
 local Home = Instance.new("TextButton")
 local HomeShadow = Instance.new("TextLabel")
 local RemoteSpy = Instance.new("TextButton")
