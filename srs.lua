@@ -665,9 +665,9 @@ NewsText.Text = [[
 F8 = hide/show; F6 = min/max
 
 Changelog:
-[*] Fixed button colors.
-[-] Removed decompile frame, will
-add something else later.
+[+] Function names.
+
+
 
 My Discord: Stefan#6965
 My Discord Server Code: cRsEhnFqsW
@@ -1477,11 +1477,27 @@ button_options = {
 					["Upvalues"] = debug.getupvalues(func),
 					["Constants"] = debug.getconstants(func)
 				}
-				local key = DebugTable.Name
 				local newfunc = RemoteLog:Clone()
 	            newfunc.TextColor3 = Color3.new(0,1,1)
 	            newfunc.BorderColor3 = Color3.new(0,1,1)
-	            newfunc.Text = key
+		    	local f_name
+		    	pcall(function()
+		    		f_name = debug.getinfo(func).name
+		    	end)
+		    	if f_name and type(f_name) == "string" and #f_name > 0 then
+		    		for i,v in pairs(getrenv()) do
+		    			if v == func then
+		    				f_name = "getrenv()."..f_name
+		    				break
+		    			end
+		    		end
+		    		newfunc.Text = f_name.."()"
+		    	else
+		    		newfunc.Text = tostring(func)
+		    	end
+		    	if not islclosure(func) then
+		    		newfunc.Text = newfunc.Text.." [C]"
+		    	end
 	            local others2 = #DebugLogsList:GetChildren()
 	            newfunc.Position = UDim2.new(0,0,0,others2*31)
 	            DebugLogsList.CanvasSize = UDim2.new(0,0,0,others2*31)
@@ -1504,6 +1520,25 @@ button_options = {
 	                        thingo.BorderColor3 = Color3.new(0,1,1)
 	                        if type(b) == "string" then
 	                            thingo.Text = [["]]..tostring(b)..[["]]
+	                        elseif type(b) == "function" then
+	                        	local f_name
+	                        	pcall(function()
+	                        		f_name = debug.getinfo(b).name
+	                        	end)
+	                        	if f_name and type(f_name) == "string" and #f_name > 0 then
+	                        		for i,v in pairs(getrenv()) do
+	                        			if v == b then
+	                        				f_name = "getrenv()."..f_name
+	                        				break
+	                        			end
+	                        		end
+	                        		thingo.Text = f_name.."()"
+	                        	else
+	                        		thingo.Text = tostring(b)
+	                        	end
+	                        	if not islclosure(b) then
+	                        		thingo.Text = thingo.Text.." [C]"
+	                        	end
 	                        else
 	                        	thingo.Text = tostring(b)
 	                        end
@@ -1557,6 +1592,25 @@ button_options = {
 		                        thingo.BorderColor3 = Color3.new(0,1,1)
 		                        if type(b) == "string" then
 		                            thingo.Text = tostring(a)..[[: "]]..tostring(b)..[["]]
+		                        elseif type(b) == "function" then
+		                        	local f_name
+		                        	pcall(function()
+		                        		f_name = debug.getinfo(b).name
+		                        	end)
+		                        	if f_name and type(f_name) == "string" and #f_name > 0 then
+		                        		for i,v in pairs(getrenv()) do
+		                        			if v == b then
+		                        				f_name = "getrenv()."..f_name
+		                        				break
+		                        			end
+		                        		end
+		                        		thingo.Text = f_name.."()"
+		                        	else
+		                        		thingo.Text = tostring(b)
+		                        	end
+		                        	if not islclosure(b) then
+		                        		thingo.Text = thingo.Text.." [C]"
+		                        	end
 		                        else
 		                        	thingo.Text = tostring(a)..": "..tostring(b)
 		                        end
@@ -1610,6 +1664,25 @@ button_options = {
 	                        thingo.BorderColor3 = Color3.new(0,1,1)
 	                        if type(b) == "string" then
 	                            thingo.Text = [["]]..tostring(b)..[["]]
+	                        elseif type(b) == "function" then
+	                        	local f_name
+	                        	pcall(function()
+	                        		f_name = debug.getinfo(b).name
+	                        	end)
+	                        	if f_name and type(f_name) == "string" and #f_name > 0 then
+	                        		for i,v in pairs(getrenv()) do
+	                        			if v == b then
+	                        				f_name = "getrenv()."..f_name
+	                        				break
+	                        			end
+	                        		end
+	                        		thingo.Text = f_name.."()"
+	                        	else
+	                        		thingo.Text = tostring(b)
+	                        	end
+	                        	if not islclosure(b) then
+	                        		thingo.Text = thingo.Text.." [C]"
+	                        	end
 	                        else
 	                        	thingo.Text = tostring(b)
 	                        end
@@ -1697,11 +1770,27 @@ button_options = {
 		[1] = {
 			["Text"] = "Send to Debug",
 			["Function"] = function(DebugTable)
-				local key = DebugTable.Name
 				local newfunc = RemoteLog:Clone()
 	            newfunc.TextColor3 = Color3.new(0,1,1)
 	            newfunc.BorderColor3 = Color3.new(0,1,1)
-	            newfunc.Text = key
+            	local f_name
+            	pcall(function()
+            		f_name = debug.getinfo(DebugTable.Function).name
+            	end)
+            	if f_name and type(f_name) == "string" and #f_name > 0 then
+            		for i,v in pairs(getrenv()) do
+            			if v == DebugTable.Function then
+            				f_name = "getrenv()."..f_name
+            				break
+            			end
+            		end
+            		newfunc.Text = f_name.."()"
+            	else
+            		newfunc.Text = tostring(DebugTable.Function)
+            	end
+            	if not islclosure(DebugTable.Function) then
+            		newfunc.Text = newfunc.Text.." [C]"
+            	end
 	            local others2 = #DebugLogsList:GetChildren()
 	            newfunc.Position = UDim2.new(0,0,0,others2*31)
 	            DebugLogsList.CanvasSize = UDim2.new(0,0,0,others2*31)
@@ -1724,6 +1813,25 @@ button_options = {
 	                        thingo.BorderColor3 = Color3.new(0,1,1)
 	                        if type(b) == "string" then
 	                            thingo.Text = [["]]..tostring(b)..[["]]
+	                        elseif type(b) == "function" then
+	                        	local f_name
+	                        	pcall(function()
+	                        		f_name = debug.getinfo(b).name
+	                        	end)
+	                        	if f_name and type(f_name) == "string" and #f_name > 0 then
+	                        		for i,v in pairs(getrenv()) do
+	                        			if v == b then
+	                        				f_name = "getrenv()."..f_name
+	                        				break
+	                        			end
+	                        		end
+	                        		thingo.Text = f_name.."()"
+	                        	else
+	                        		thingo.Text = tostring(b)
+	                        	end
+	                        	if not islclosure(b) then
+	                        		thingo.Text = thingo.Text.." [C]"
+	                        	end
 	                        else
 	                        	thingo.Text = tostring(b)
 	                        end
@@ -1777,6 +1885,25 @@ button_options = {
 		                        thingo.BorderColor3 = Color3.new(0,1,1)
 		                        if type(b) == "string" then
 		                            thingo.Text = [["]]..tostring(b)..[["]]
+		                        elseif type(b) == "function" then
+		                        	local f_name
+		                        	pcall(function()
+		                        		f_name = debug.getinfo(b).name
+		                        	end)
+		                        	if f_name and type(f_name) == "string" and #f_name > 0 then
+		                        		for i,v in pairs(getrenv()) do
+		                        			if v == b then
+		                        				f_name = "getrenv()."..f_name
+		                        				break
+		                        			end
+		                        		end
+		                        		thingo.Text = f_name.."()"
+		                        	else
+		                        		thingo.Text = tostring(b)
+		                        	end
+		                        	if not islclosure(b) then
+		                        		thingo.Text = thingo.Text.." [C]"
+		                        	end
 		                        else
 		                        	thingo.Text = tostring(b)
 		                        end
@@ -1830,6 +1957,25 @@ button_options = {
 	                        thingo.BorderColor3 = Color3.new(0,1,1)
 	                        if type(b) == "string" then
 	                            thingo.Text = [["]]..tostring(b)..[["]]
+	                        elseif type(b) == "function" then
+	                        	local f_name
+	                        	pcall(function()
+	                        		f_name = debug.getinfo(b).name
+	                        	end)
+	                        	if f_name and type(f_name) == "string" and #f_name > 0 then
+	                        		for i,v in pairs(getrenv()) do
+	                        			if v == b then
+	                        				f_name = "getrenv()."..f_name
+	                        				break
+	                        			end
+	                        		end
+	                        		thingo.Text = f_name.."()"
+	                        	else
+	                        		thingo.Text = tostring(b)
+	                        	end
+	                        	if not islclosure(b) then
+	                        		thingo.Text = thingo.Text.." [C]"
+	                        	end
 	                        else
 	                        	thingo.Text = tostring(b)
 	                        end
@@ -2000,7 +2146,13 @@ local HasSpecial = function(str)
 end
 local ToScript = function(object,scr,fnc,method, ...)
     local script = "--// Script: "..GetPath(scr)
-    script = script.."\n--// Function: "..tostring(fnc).."\n\n"
+    local f_name = tostring(fnc)
+    pcall(function()
+    	if type(debug.getinfo(fnc).name) == "string" and #debug.getinfo(fnc).name > 0 then
+    		f_name = debug.getinfo(fnc).name
+    	end
+    end)
+    script = script.."\n--// Function: "..f_name.."\n\n"
     local args = {}
     local stuff_idk = {...}
     for i = 1,#stuff_idk do
@@ -2339,6 +2491,25 @@ SearchButton.MouseButton1Click:Connect(function()
 			            newfunc.BorderColor3 = Color3.new(0,1,1)
 			            if type(v2) == "string" then
 	                        newfunc.Text = [["]]..tostring(v2)..[["]]
+                    	elseif type(v2) == "function" then
+                        	local f_name
+                        	pcall(function()
+                        		f_name = debug.getinfo(v2).name
+                        	end)
+                        	if f_name and type(f_name) == "string" and #f_name > 0 then
+                        		for i,v in pairs(getrenv()) do
+                        			if v == v2 then
+                        				f_name = "getrenv()."..f_name
+                        				break
+                        			end
+                        		end
+                        		newfunc.Text = f_name.."()"
+                        	else
+                        		newfunc.Text = tostring(v2)
+                        	end
+                        	if not islclosure(v2) then
+                        		newfunc.Text = newfunc.Text.." [C]"
+                        	end
 	                    else
 	                        newfunc.Text = tostring(v2)
 	                    end
@@ -2393,6 +2564,25 @@ SearchButton.MouseButton1Click:Connect(function()
 			            newfunc.BorderColor3 = Color3.new(0,1,1)
 			            if type(v2) == "string" then
 	                        newfunc.Text = [["]]..tostring(v2)..[["]]
+	                    elseif type(v2) == "function" then
+                        	local f_name
+                        	pcall(function()
+                        		f_name = debug.getinfo(v2).name
+                        	end)
+                        	if f_name and type(f_name) == "string" and #f_name > 0 then
+                        		for i,v in pairs(getrenv()) do
+                        			if v == v2 then
+                        				f_name = "getrenv()."..f_name
+                        				break
+                        			end
+                        		end
+                        		newfunc.Text = f_name.."()"
+                        	else
+                        		newfunc.Text = tostring(v2)
+                        	end
+                        	if not islclosure(v2) then
+                        		newfunc.Text = newfunc.Text.." [C]"
+                        	end
 	                    else
 	                        newfunc.Text = tostring(v2)
 	                    end
@@ -2449,6 +2639,25 @@ SearchButton.MouseButton1Click:Connect(function()
 			            newfunc.BorderColor3 = Color3.new(0,1,1)
 			            if type(v2) == "string" then
 	                        newfunc.Text = tostring(i2)..[[: ]]..tostring(v2)..[["]]
+	                    elseif type(v2) == "function" then
+                        	local f_name
+                        	pcall(function()
+                        		f_name = debug.getinfo(v2).name
+                        	end)
+                        	if f_name and type(f_name) == "string" and #f_name > 0 then
+                        		for i,v in pairs(getrenv()) do
+                        			if v == v2 then
+                        				f_name = "getrenv()."..f_name
+                        				break
+                        			end
+                        		end
+                        		newfunc.Text = f_name.."()"
+                        	else
+                        		newfunc.Text = tostring(v2)
+                        	end
+                        	if not islclosure(v2) then
+                        		newfunc.Text = newfunc.Text.." [C]"
+                        	end
 	                    else
 	                        newfunc.Text = tostring(i2)..": "..tostring(v2)
 	                    end
@@ -3604,7 +3813,7 @@ local FireServerHook = newcclosure(function(self,...)
         ["args"] = args,
         ["method"] = "FireServer",
         ["Hidden"] = true,
-        ["ToScript"] = ToScript(self,scr,DebugTable.Name,"FireServer",unpack(args))
+        ["ToScript"] = ToScript(self,scr,DebugTable.Function,"FireServer",unpack(args))
     }
 	remote_bindable.Fire(remote_bindable,"OnRemote",RemoteStuff)
     return FireServerBackup(self,...)
@@ -3675,7 +3884,7 @@ local InvokeServerHook = newcclosure(function(self,...)
 		["args"] = args,
 		["method"] = "InvokeServer",
 		["Hidden"] = true,
-		["ToScript"] = ToScript(self,scr,DebugTable.Name,"InvokeServer",unpack(args))
+		["ToScript"] = ToScript(self,scr,DebugTable.Function,"InvokeServer",unpack(args))
 	}
     remote_bindable.Fire(remote_bindable,"OnRemote",RemoteStuff)
     return InvokeServerBackup(self,...)
@@ -3759,7 +3968,7 @@ mt.__namecall = newcclosure(function(self,...)
             ["rem"] = self,
             ["args"] = args,
             ["method"] = "FireServer",
-            ["ToScript"] = ToScript(self,scr,DebugTable.Name,"FireServer",unpack(args))
+            ["ToScript"] = ToScript(self,scr,DebugTable.Function,"FireServer",unpack(args))
         }
         remote_bindable:Fire("OnRemote",RemoteStuff)
     end
@@ -3820,7 +4029,7 @@ mt.__namecall = newcclosure(function(self,...)
             ["rem"] = self,
             ["args"] = args,
             ["method"] = "InvokeServer",
-            ["ToScript"] = ToScript(self,scr,DebugTable.Name,"InvokeServer",unpack(args))
+            ["ToScript"] = ToScript(self,scr,DebugTable.Function,"InvokeServer",unpack(args))
         }
         remote_bindable.Fire(remote_bindable,"OnRemote",RemoteStuff)
     end
