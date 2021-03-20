@@ -7,8 +7,9 @@ end
 for i,v in pairs(getconnections(game:GetService("LogService").MessageOut)) do
     v:Disable()
 end
+local PROTECT_LOL = true
 local SRS = Instance.new("ScreenGui")
-SRS.Name = syn.crypt.hash(tostring(math.random(0,10000)))
+SRS.Name = "SRS"
 SRS.ResetOnSpawn = false
 local run_sv = game:GetService("RunService")
 local DarkButtons = {}
@@ -4183,3 +4184,10 @@ UserInputService.InputChanged:Connect(function(input)
 		update(input)
 	end
 end)
+
+if PROTECT_LOL then
+	for i,v in pairs(SRS:GetDescendants()) do
+		v.Name = syn.crypt.hash(tostring(math.random(0,10000)))
+	end
+	SRS.Name = syn.crypt.hash(tostring(math.random(0,10000)))
+end
