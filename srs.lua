@@ -1562,7 +1562,7 @@ button_options = {
 	                        thingo.MouseEnter:Connect(function()
 								EnterSound:Play()
 								for i,v in pairs(DarkButtons) do
-									if v == thingo then
+									if v[1] == thingo then
 										return
 									end
 								end
@@ -1634,7 +1634,7 @@ button_options = {
 		                        thingo.MouseEnter:Connect(function()
 									EnterSound:Play()
 									for i,v in pairs(DarkButtons) do
-										if v == thingo then
+										if v[1] == thingo then
 											return
 										end
 									end
@@ -1706,7 +1706,7 @@ button_options = {
 	                        thingo.MouseEnter:Connect(function()
 								EnterSound:Play()
 								for i,v in pairs(DarkButtons) do
-									if v == thingo then
+									if v[1] == thingo then
 										return
 									end
 								end
@@ -1736,7 +1736,7 @@ button_options = {
 				newfunc.MouseEnter:Connect(function()
 					EnterSound:Play()
 					for i,v in pairs(DarkButtons) do
-						if v == newfunc then
+						if v[1] == newfunc then
 							return
 						end
 					end
@@ -1855,7 +1855,7 @@ button_options = {
 	                        thingo.MouseEnter:Connect(function()
 								EnterSound:Play()
 								for i,v in pairs(DarkButtons) do
-									if v == thingo then
+									if v[1] == thingo then
 										return
 									end
 								end
@@ -1927,7 +1927,7 @@ button_options = {
 		                        thingo.MouseEnter:Connect(function()
 									EnterSound:Play()
 									for i,v in pairs(DarkButtons) do
-										if v == thingo then
+										if v[1] == thingo then
 											return
 										end
 									end
@@ -1999,7 +1999,7 @@ button_options = {
 	                        thingo.MouseEnter:Connect(function()
 								EnterSound:Play()
 								for i,v in pairs(DarkButtons) do
-									if v == thingo then
+									if v[1] == thingo then
 										return
 									end
 								end
@@ -2029,7 +2029,7 @@ button_options = {
 				newfunc.MouseEnter:Connect(function()
 					EnterSound:Play()
 					for i,v in pairs(DarkButtons) do
-						if v == newfunc then
+						if v[1] == newfunc then
 							return
 						end
 					end
@@ -2119,7 +2119,7 @@ end)
 Options.MouseEnter:Connect(function()
 	EnterSound:Play()
 	for i,v in pairs(DarkButtons) do
-		if v == Options then
+		if v[1] == Options then
 			return
 		end
 	end
@@ -2287,7 +2287,7 @@ UpdateRemotes = function()
 				new.MouseEnter:Connect(function()
 					EnterSound:Play()
 					for i,v in pairs(DarkButtons) do
-						if v == new then
+						if v[1] == new then
 							return
 						end
 					end
@@ -2341,7 +2341,7 @@ UpdateRemotes = function()
                 new.MouseEnter:Connect(function()
 					EnterSound:Play()
 					for i,v in pairs(DarkButtons) do
-						if v == new then
+						if v[1] == new then
 							return
 						end
 					end
@@ -2393,7 +2393,7 @@ local function UpdateNamecalls()
         new.MouseEnter:Connect(function()
 			EnterSound:Play()
 			for i,v in pairs(DarkButtons) do
-				if v == new then
+				if v[1] == new then
 					return
 				end
 			end
@@ -2448,7 +2448,7 @@ end)
 Clear.MouseEnter:Connect(function()
 	EnterSound:Play()
 	for i,v in pairs(DarkButtons) do
-		if v == Clear then
+		if v[1] == Clear then
 			return
 		end
 	end
@@ -2523,7 +2523,7 @@ SearchButton.MouseButton1Click:Connect(function()
 						newfunc.MouseEnter:Connect(function()
 							EnterSound:Play()
 							for i,v in pairs(DarkButtons) do
-								if v == newfunc then
+								if v[1] == newfunc then
 									return
 								end
 							end
@@ -2596,7 +2596,7 @@ SearchButton.MouseButton1Click:Connect(function()
 						newfunc.MouseEnter:Connect(function()
 							EnterSound:Play()
 							for i,v in pairs(DarkButtons) do
-								if v == newfunc then
+								if v[1] == newfunc then
 									return
 								end
 							end
@@ -2671,7 +2671,7 @@ SearchButton.MouseButton1Click:Connect(function()
 						newfunc.MouseEnter:Connect(function()
 							EnterSound:Play()
 							for i,v in pairs(DarkButtons) do
-								if v == newfunc then
+								if v[1] == newfunc then
 									return
 								end
 							end
@@ -2771,7 +2771,7 @@ SearchButton.MouseButton1Click:Connect(function()
 							newfunc.MouseEnter:Connect(function()
 								EnterSound:Play()
 								for i,v in pairs(DarkButtons) do
-									if v == newfunc then
+									if v[1] == newfunc then
 										return
 									end
 								end
@@ -2816,7 +2816,7 @@ SearchButton.MouseButton1Click:Connect(function()
 							newfunc.MouseEnter:Connect(function()
 								EnterSound:Play()
 								for i,v in pairs(DarkButtons) do
-									if v == newfunc then
+									if v[1] == newfunc then
 										return
 									end
 								end
@@ -2907,7 +2907,7 @@ SearchButton.MouseButton1Click:Connect(function()
 								newfunc.MouseEnter:Connect(function()
 									EnterSound:Play()
 									for i,v in pairs(DarkButtons) do
-										if v == newfunc then
+										if v[1] == newfunc then
 											return
 										end
 									end
@@ -2947,7 +2947,7 @@ end)
 SearchButton.MouseEnter:Connect(function()
 	EnterSound:Play()
 	for i,v in pairs(DarkButtons) do
-		if v == SearchButton then
+		if v[1] == SearchButton then
 			return
 		end
 	end
@@ -2982,7 +2982,8 @@ end)
 UpScan.MouseEnter:Connect(function()
 	EnterSound:Play()
 	for i,v in pairs(DarkButtons) do
-		if v == UpScan then
+		if v[1] == UpScan then
+			print("ok")
 			return
 		end
 	end
@@ -3000,7 +3001,6 @@ UpScan.MouseLeave:Connect(function()
 		if v[1] == UpScan then
 			UpScan.TextColor3 = v[2]
 			table.remove(DarkButtons,i)
-			break
 		end
 	end
 end)
@@ -3016,7 +3016,7 @@ end)
 Home.MouseEnter:Connect(function()
 	EnterSound:Play()
 	for i,v in pairs(DarkButtons) do
-		if v == Home then
+		if v[1] == Home then
 			return
 		end
 	end
@@ -3051,7 +3051,7 @@ end)
 Remotes.MouseEnter:Connect(function()
 	EnterSound:Play()
 	for i,v in pairs(DarkButtons) do
-		if v == Remotes then
+		if v[1] == Remotes then
 			return
 		end
 	end
@@ -3086,7 +3086,7 @@ end)
 RemoteSpy.MouseEnter:Connect(function()
 	EnterSound:Play()
 	for i,v in pairs(DarkButtons) do
-		if v == RemoteSpy then
+		if v[1] == RemoteSpy then
 			return
 		end
 	end
@@ -3135,7 +3135,7 @@ end)
 EnableSrs.MouseEnter:Connect(function()
 	EnterSound:Play()
 	for i,v in pairs(DarkButtons) do
-		if v == EnableSrs then
+		if v[1] == EnableSrs then
 			return
 		end
 	end
@@ -3160,7 +3160,7 @@ end)
 ScriptSpy.MouseEnter:Connect(function()
 	EnterSound:Play()
 	for i,v in pairs(DarkButtons) do
-		if v == ScriptSpy then
+		if v[1] == ScriptSpy then
 			return
 		end
 	end
@@ -3195,7 +3195,7 @@ end)
 Debug.MouseEnter:Connect(function()
 	EnterSound:Play()
 	for i,v in pairs(DarkButtons) do
-		if v == Debug then
+		if v[1] == Debug then
 			return
 		end
 	end
@@ -3230,7 +3230,7 @@ end)
 Namecall.MouseEnter:Connect(function()
 	EnterSound:Play()
 	for i,v in pairs(DarkButtons) do
-		if v == Namecall then
+		if v[1] == Namecall then
 			return
 		end
 	end
@@ -3269,7 +3269,7 @@ end)
 RemoteFire.MouseEnter:Connect(function()
 	EnterSound:Play()
 	for i,v in pairs(DarkButtons) do
-		if v == RemoteFire then
+		if v[1] == RemoteFire then
 			return
 		end
 	end
@@ -3310,7 +3310,7 @@ end)
 SpyScript.MouseEnter:Connect(function()
 	EnterSound:Play()
 	for i,v in pairs(DarkButtons) do
-		if v == SpyScript then
+		if v[1] == SpyScript then
 			return
 		end
 	end
@@ -3350,7 +3350,7 @@ end)
 UnSpyScript.MouseEnter:Connect(function()
 	EnterSound:Play()
 	for i,v in pairs(DarkButtons) do
-		if v == UnSpyScript then
+		if v[1] == UnSpyScript then
 			return
 		end
 	end
@@ -3381,7 +3381,7 @@ end)
 IgnoreRemote.MouseEnter:Connect(function()
 	EnterSound:Play()
 	for i,v in pairs(DarkButtons) do
-		if v == IgnoreRemote then
+		if v[1] == IgnoreRemote then
 			return
 		end
 	end
@@ -3412,7 +3412,7 @@ end)
 IgnoreRemoteCall.MouseEnter:Connect(function()
 	EnterSound:Play()
 	for i,v in pairs(DarkButtons) do
-		if v == IgnoreRemoteCall then
+		if v[1] == IgnoreRemoteCall then
 			return
 		end
 	end
@@ -3443,7 +3443,7 @@ end)
 IgnoreIndCall.MouseEnter:Connect(function()
 	EnterSound:Play()
 	for i,v in pairs(DarkButtons) do
-		if v == IgnoreIndCall then
+		if v[1] == IgnoreIndCall then
 			return
 		end
 	end
@@ -3476,7 +3476,7 @@ end)
 EnableNamecall.MouseEnter:Connect(function()
 	EnterSound:Play()
 	for i,v in pairs(DarkButtons) do
-		if v == EnableNamecall then
+		if v[1] == EnableNamecall then
 			return
 		end
 	end
@@ -3632,7 +3632,7 @@ local OnRemote = function(MAIN_INFO)
 		new.MouseEnter:Connect(function()
 			EnterSound:Play()
 			for i,v in pairs(DarkButtons) do
-				if v == new then
+				if v[1] == new then
 					return
 				end
 			end
@@ -3715,7 +3715,7 @@ local OnScript = function(MAIN_INFO)
 		new.MouseEnter:Connect(function()
 			EnterSound:Play()
 			for i,v in pairs(DarkButtons) do
-				if v == new then
+				if v[1] == new then
 					return
 				end
 			end
