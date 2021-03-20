@@ -1920,7 +1920,6 @@ end
 UserInputService.InputBegan:Connect(function(Tinfo,bool)
 	if bool then return end
 	if yo_chill then return end
-	print("hmm")
     if Tinfo.KeyCode == Enum.KeyCode.F8 then
     	yo_chill = true
         if GUI_OPENED then
@@ -1936,7 +1935,6 @@ UserInputService.InputBegan:Connect(function(Tinfo,bool)
         end)
     end
     if Tinfo.KeyCode == Enum.KeyCode.F6 then
-    	print("yeet")
     	yo_chill = true
         if GUI_MAX then
             GUI_MAX = false
