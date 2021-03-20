@@ -4187,7 +4187,7 @@ end)
 
 if PROTECT_LOL then
 	for i,v in pairs(SRS:GetDescendants()) do
-		v.Name = syn.crypt.hash(tostring(math.random(0,10000)))
+		v.Name = syn.crypt.random(100)
 	end
-	SRS.Name = syn.crypt.hash(tostring(math.random(0,10000)))
+	SRS.Name = syn.crypt.random(100)
 end
