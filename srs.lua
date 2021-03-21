@@ -671,7 +671,7 @@ F8 = hide/show; F6 = min/max
 
 Changelog:
 [+] Function names.
-
+[+] Number of function arguments.
 
 
 My Discord: Stefan#6965
