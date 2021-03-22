@@ -7,7 +7,7 @@ end
 for i,v in pairs(getconnections(game:GetService("LogService").MessageOut)) do
     v:Disable()
 end
-local PROTECT_LOL = true
+local PROTECT_LOL = false
 local SRS = Instance.new("ScreenGui")
 SRS.Name = "SRS"
 SRS.ResetOnSpawn = false
@@ -94,7 +94,6 @@ GetPath = function(Instance,pass)
             end
             if typeof(LP.Character) == "Instance" and Instance:IsDescendantOf(LP.Character) then
                 almost = "game:GetService(\"Players\").LocalPlayer.Character"..string.sub(almost,1+#GetPath(LP.Character,true))
-                print(Instance:GetFullName())
             end
             if typeof(LP) == "Instance" and Instance:IsDescendantOf(LP) then
                 almost = "game:GetService(\"Players\").LocalPlayer"..string.sub(almost,1+#GetPath(LP,true))
@@ -1506,7 +1505,7 @@ button_options = {
                 end
                 local others2 = #DebugLogsList:GetChildren()
                 newfunc.Position = UDim2.new(0,0,0,others2*31)
-                DebugLogsList.CanvasSize = UDim2.new(0,0,0,others2*31)
+                DebugLogsList.CanvasSize = UDim2.new(0,0,0,(others2+1)*31)
                 newfunc.MouseButton1Click:Connect(function()
                     ClickSound:Play()
                     TweenButtonPress(newfunc)
@@ -1551,7 +1550,7 @@ button_options = {
                             local others3 = #CLogs:GetChildren()
                             thingo.Position = UDim2.new(0,0,0,others3*31)
                             thingo.Parent = CLogs
-                            CLogs.CanvasSize = UDim2.new(0,0,0,others3*31)
+                            CLogs.CanvasSize = UDim2.new(0,0,0,(others3+1)*31)
                             thingo.MouseButton1Click:Connect(function()
                                 ClickSound:Play()
                                 TweenButtonPress(thingo)
@@ -1623,7 +1622,7 @@ button_options = {
                                 local others3 = #ELogs:GetChildren()
                                 thingo.Position = UDim2.new(0,0,0,others3*31)
                                 thingo.Parent = ELogs
-                                ELogs.CanvasSize = UDim2.new(0,0,0,others3*31)
+                                ELogs.CanvasSize = UDim2.new(0,0,0,(others3+1)*31)
                                 thingo.MouseButton1Click:Connect(function()
                                     ClickSound:Play()
                                     TweenButtonPress(thingo)
@@ -1695,7 +1694,7 @@ button_options = {
                             local others3 = #ULogs:GetChildren()
                             thingo.Position = UDim2.new(0,0,0,others3*31)
                             thingo.Parent = ULogs
-                            ULogs.CanvasSize = UDim2.new(0,0,0,others3*31)
+                            ULogs.CanvasSize = UDim2.new(0,0,0,(others3+1)*31)
                             thingo.MouseButton1Click:Connect(function()
                                 ClickSound:Play()
                                 TweenButtonPress(thingo)
@@ -1799,7 +1798,7 @@ button_options = {
                 end
                 local others2 = #DebugLogsList:GetChildren()
                 newfunc.Position = UDim2.new(0,0,0,others2*31)
-                DebugLogsList.CanvasSize = UDim2.new(0,0,0,others2*31)
+                DebugLogsList.CanvasSize = UDim2.new(0,0,0,(others2+1)*31)
                 newfunc.MouseButton1Click:Connect(function()
                     ClickSound:Play()
                     TweenButtonPress(newfunc)
@@ -1844,7 +1843,7 @@ button_options = {
                             local others3 = #CLogs:GetChildren()
                             thingo.Position = UDim2.new(0,0,0,others3*31)
                             thingo.Parent = CLogs
-                            CLogs.CanvasSize = UDim2.new(0,0,0,others3*31)
+                            CLogs.CanvasSize = UDim2.new(0,0,0,(others3+1)*31)
                             thingo.MouseButton1Click:Connect(function()
                                 ClickSound:Play()
                                 TweenButtonPress(thingo)
@@ -1916,7 +1915,7 @@ button_options = {
                                 local others3 = #ELogs:GetChildren()
                                 thingo.Position = UDim2.new(0,0,0,others3*31)
                                 thingo.Parent = ELogs
-                                ELogs.CanvasSize = UDim2.new(0,0,0,others3*31)
+                                ELogs.CanvasSize = UDim2.new(0,0,0,(others3+1)*31)
                                 thingo.MouseButton1Click:Connect(function()
                                     ClickSound:Play()
                                     TweenButtonPress(thingo)
@@ -1988,7 +1987,7 @@ button_options = {
                             local others3 = #ULogs:GetChildren()
                             thingo.Position = UDim2.new(0,0,0,others3*31)
                             thingo.Parent = ULogs
-                            ULogs.CanvasSize = UDim2.new(0,0,0,others3*31)
+                            ULogs.CanvasSize = UDim2.new(0,0,0,(others3+1)*31)
                             thingo.MouseButton1Click:Connect(function()
                                 ClickSound:Play()
                                 TweenButtonPress(thingo)
@@ -2388,7 +2387,7 @@ UpdateRemotes = function()
             end
         end)
     end
-    RemotesList.CanvasSize = UDim2.new(0,0,0,amount*35)
+    RemotesList.CanvasSize = UDim2.new(0,0,0,(amount+1)*35)
 end
 local function UpdateNamecalls()
 
@@ -2963,7 +2962,7 @@ SearchButton.MouseButton1Click:Connect(function()
             end
         end
     end
-    ChangerLogsList.CanvasSize = UDim2.new(0,0,0,#ChangerLogsList:GetChildren()*31)
+    ChangerLogsList.CanvasSize = UDim2.new(0,0,0,(#ChangerLogsList:GetChildren()+1)*31)
 end)
 SearchButton.MouseEnter:Connect(function()
     EnterSound:Play()
@@ -3004,7 +3003,6 @@ UpScan.MouseEnter:Connect(function()
     EnterSound:Play()
     for i,v in pairs(DarkButtons) do
         if v[1] == UpScan then
-            print("ok")
             return
         end
     end
@@ -3688,7 +3686,7 @@ local OnRemote = function(MAIN_INFO)
             end
         end)
         new.Parent = RemoteLogsList
-        RemoteLogsList.CanvasSize = UDim2.new(0,0,0,#RemoteLogsList:GetChildren()*31)
+        RemoteLogsList.CanvasSize = UDim2.new(0,0,0,(#RemoteLogsList:GetChildren()+1)*31)
     end
 end
 local remote_bindable = Instance.new("BindableEvent")
@@ -3771,7 +3769,7 @@ local OnScript = function(MAIN_INFO)
             end
         end)
         backup3(new,"Parent",ScriptLogsList)
-        backup3(ScriptLogsList,"CanvasSize",UDim2.new(0,0,0,#ScriptLogsList:GetChildren()*31))
+        backup3(ScriptLogsList,"CanvasSize",UDim2.new(0,0,0,(#ScriptLogsList:GetChildren()+1)*31))
     end
 end
 
