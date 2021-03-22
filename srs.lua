@@ -92,10 +92,11 @@ GetPath = function(Instance,pass)
                     almost = almost.."."..v
                 end
             end
-            if Instance:IsDescendantOf(LP.Character) then
+            if typeof(LP.Character) == "Instance" and Instance:IsDescendantOf(LP.Character) then
                 almost = "game:GetService(\"Players\").LocalPlayer.Character"..string.sub(almost,1+#GetPath(LP.Character,true))
+                print(Instance:GetFullName())
             end
-            if Instance:IsDescendantOf(LP) then
+            if typeof(LP) == "Instance" and Instance:IsDescendantOf(LP) then
                 almost = "game:GetService(\"Players\").LocalPlayer"..string.sub(almost,1+#GetPath(LP,true))
             end
             return almost
@@ -3142,18 +3143,23 @@ EnableSrs.MouseButton1Click:Connect(function()
     ClickSound:Play()
     SRS_ENABLED = not SRS_ENABLED
     if SRS_ENABLED then
-        EnableSrs.TextColor3 = Color3.new(0-0.4,1-0.4,0-0.4)
+        for i,v in pairs(DarkButtons) do
+            if v[1] == EnableSrs then
+                v[2] = Color3.new(0,1,0)
+                break
+            end
+        end
+        EnableSrs.TextColor3 = Color3.new(0,0.6,0)
         EnableSrs.Text = "Enabled"
         EnableSrsShadow.Text = "Enabled"
     else
         for i,v in pairs(DarkButtons) do
             if v[1] == EnableSrs then
-                EnableSrs.TextColor3 = v[2]
-                table.remove(DarkButtons,i)
+                v[2] = Color3.new(1,0,0)
                 break
             end
         end
-        EnableSrs.TextColor3 = Color3.new(1,0,0)
+        EnableSrs.TextColor3 = Color3.new(0.6,0,0)
         EnableSrs.Text = "Disabled"
         EnableSrsShadow.Text = "Disabled"
     end
@@ -3781,13 +3787,12 @@ local FireServerHook = newcclosure(function(self,...)
             return FireServerBackup(self,...)
         end
     end
-
-    for i,v in pairs(IgnoredCalls) do
-        for i2,v2 in pairs(v["Args"]) do
-            if getrawmetatable(v2) ~= {} and getrawmetatable(v2) ~= nil then continue end
-            if getrawmetatable(args[i2]) ~= {} and getrawmetatable(args[i2]) ~= nil then continue end
-            if type(v2) == "string" and type(args[i2]) == "string" and v2 == args[i2] then
-                return FireServerBackup(self,...)
+    for a,b in pairs(IgnoredCalls) do
+        for i,v in pairs(args) do
+            for i2,v2 in pairs(b["Args"]) do
+                if type(v2) == "string" and type(v) == "string" and v == v2 then
+                    return FireServerBackup(self,...)
+                end
             end
         end
     end
@@ -3854,12 +3859,12 @@ local InvokeServerHook = newcclosure(function(self,...)
         end
     end
 
-    for i,v in pairs(IgnoredCalls) do
-        for i2,v2 in pairs(v["Args"]) do
-            if getrawmetatable(v2) ~= {} and getrawmetatable(v2) ~= nil then continue end
-            if getrawmetatable(args[i2]) ~= {} and getrawmetatable(args[i2]) ~= nil then continue end
-            if type(v2) == "string" and type(args[i2]) == "string" and v2 == args[i2] then
-                return InvokeServerBackup(self,...)
+    for a,b in pairs(IgnoredCalls) do
+        for i,v in pairs(args) do
+            for i2,v2 in pairs(b["Args"]) do
+                if type(v2) == "string" and type(v) == "string" and v == v2 then
+                    return InvokeServerBackup(self,...)
+                end
             end
         end
     end
@@ -3939,12 +3944,12 @@ mt.__namecall = newcclosure(function(self,...)
         return backup(self,...)
     end
     if getnamecallmethod() == "FireServer" and self.ClassName == "RemoteEvent" then
-        for i,v in pairs(IgnoredCalls) do
-            for i2,v2 in pairs(v["Args"]) do
-                if getrawmetatable(v2) ~= {} and getrawmetatable(v2) ~= nil then continue end
-                if getrawmetatable(args[i2]) ~= {} and getrawmetatable(args[i2]) ~= nil then continue end
-                if type(v2) == "string" and type(args[i2]) == "string" and v2 == args[i2] then
-                    return backup(self,...)
+        for a,b in pairs(IgnoredCalls) do
+            for i,v in pairs(args) do
+                for i2,v2 in pairs(b["Args"]) do
+                    if type(v2) == "string" and type(v) == "string" and v == v2 then
+                        return backup(self,...)
+                    end
                 end
             end
         end
@@ -4000,12 +4005,12 @@ mt.__namecall = newcclosure(function(self,...)
         remote_bindable:Fire("OnRemote",RemoteStuff)
     end
     if getnamecallmethod() == "InvokeServer" and self.ClassName == "RemoteFunction" then
-        for i,v in pairs(IgnoredCalls) do
-            for i2,v2 in pairs(v["Args"]) do
-                if getrawmetatable(v2) ~= {} and getrawmetatable(v2) ~= nil then continue end
-                if getrawmetatable(args[i2]) ~= {} and getrawmetatable(args[i2]) ~= nil then continue end
-                if type(v2) == "string" and type(args[i2]) == "string" and v2 == args[i2] then
-                    return backup(self,...)
+        for a,b in pairs(IgnoredCalls) do
+            for i,v in pairs(args) do
+                for i2,v2 in pairs(b["Args"]) do
+                    if type(v2) == "string" and type(v) == "string" and v == v2 then
+                        return backup(self,...)
+                    end
                 end
             end
         end
