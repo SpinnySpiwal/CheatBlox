@@ -7,10 +7,11 @@ end
 for i,v in pairs(getconnections(game:GetService("LogService").MessageOut)) do
     v:Disable()
 end
-local PROTECT_LOL = false
+local PROTECT_LOL = true
 local SRS = Instance.new("ScreenGui")
 SRS.Name = "SRS"
 SRS.ResetOnSpawn = false
+local lexer = loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptingStefan/CheatBlox/main/lexer_modded.lua",true))()
 local run_sv = game:GetService("RunService")
 local DarkButtons = {}
 local COLOR_SCHEME_OPTIONS = {
@@ -43,6 +44,109 @@ local decompile = function(...)
         return "Decompilation Error"
     end
     return ret
+end
+local function ScriptingBox(box)
+    local placecolor = Color3.new(1,1,1)
+    local placetext = ""
+    pcall(function()
+        placetext = box.PlaceholderText
+        placecolor = box.PlaceholderColor3
+    end)
+    box.RichText = true
+    local label = Instance.new("TextLabel")
+    label.ZIndex = box.ZIndex + 1
+    label.AnchorPoint = box.AnchorPoint
+    label.TextXAlignment = box.TextXAlignment
+    label.TextWrapped = box.TextWrapped
+    label.TextYAlignment = box.TextYAlignment
+    label.BorderColor3 = box.BorderColor3
+    label.BorderMode = box.BorderMode
+    label.BorderSizePixel = box.BorderSizePixel
+    label.Rotation = box.Rotation
+    label.TextColor3 = Color3.new(1,1,1)
+    label.Size = box.Size
+    label.Position = box.Position
+    label.TextSize = box.TextSize
+    label.Name = box.Name.." Copy lol"
+    label.TextScaled = box.TextScaled
+    label.Font = box.Font
+    label.BackgroundTransparency = box.BackgroundTransparency
+    label.BackgroundColor3 = box.BackgroundColor3
+    label.RichText = true
+    for i,v in pairs(box:GetChildren()) do
+        v:Clone().Parent = label
+    end
+    box.BackgroundTransparency = 1
+    box.TextTransparency = 1
+    box.TextStrokeTransparency = 1
+    local colors = {
+        ["keyword"] = "rgb(240, 40, 10)",
+        ["number"] = "rgb(255, 255, 0)",
+        ["iden"] = "rgb(255, 255, 255)",
+        ["string"] = "rgb(0, 255, 0)",
+        ["builtin"] = "rgb(0, 255, 255)",
+        ["comment"] = "rgb(80, 80, 80)"
+    }
+
+    local bold = {
+        ["builtin"] = true
+    }
+    local change
+    change = function()
+        label.Text = ""
+        local ok = box.Text
+        if ok == "" or ok == " " or not ok then
+            if not placetext or placetext == "" then
+                return
+            else
+                ok = placetext
+            end
+        end
+        if box:IsA("TextBox") and box.SelectionStart ~= -1 and type(box.SelectionStart) == "number" and not (box.SelectionStart > #string.split(ok,"")) then
+            local oof2 = string.split(ok,"")
+            local hmm = ""
+            local start_pos = box.SelectionStart
+            local end_pos = box.CursorPosition
+            if end_pos > #oof2 then end_pos = end_pos - 1 end
+            if end_pos < start_pos then
+                local cup = end_pos
+                end_pos = start_pos
+                start_pos = cup
+                cup = nil
+            end
+            oof2[start_pos] = "<u>"..oof2[start_pos]
+            oof2[end_pos] = oof2[end_pos].."</u>"
+            for i,v in pairs(oof2) do
+                hmm = hmm..v
+            end
+            label.Text = hmm
+            return
+        end
+        local stuff = {}
+        for i,v in lexer.scan(ok) do
+            table.insert(stuff,{i,v})
+        end
+        for a,b in pairs(stuff) do
+            local i = b[1]
+            local v = b[2]
+            if colors[i] then
+                if bold[i] or (stuff[a+1] and stuff[a+1][1] == "(") then
+                    label.Text = label.Text.."<b>"..'<font color= "'..colors[i]..'">'..v..'</font>'.."</b>"
+                else
+                    label.Text = label.Text..'<font color= "'..colors[i]..'">'..v..'</font>'
+                end
+            else
+                if bold[i] or (stuff[a+1] and stuff[a+1][1] == "(") then
+                    label.Text = label.Text.."<b>"..'<font color= "rgb(255, 255, 255)">'..v..'</font>'.."</b>"
+                else
+                    label.Text = label.Text..'<font color= "rgb(255, 255, 255)">'..v..'</font>'
+                end
+            end
+        end
+    end
+    box.Changed:Connect(change)
+    change()
+    label.Parent = box
 end
 local function call_func(func,...)
     setcontext(6)
@@ -672,7 +776,7 @@ F8 = hide/show; F6 = min/max
 Changelog:
 [+] Function names.
 [+] Number of function arguments.
-
+[+] Syntax colors.
 
 My Discord: Stefan#6965
 My Discord Server Code: cRsEhnFqsW
@@ -1244,7 +1348,7 @@ ValChangerBox.BorderSizePixel = 2
 ValChangerBox.Position = UDim2.new(0.5, 0, 0.899999976, 0)
 ValChangerBox.Size = UDim2.new(0.800000012, 0, 0, 50)
 ValChangerBox.Font = Enum.Font.SourceSans
-ValChangerBox.PlaceholderText = "Enter new value here"
+ValChangerBox.PlaceholderText = "--// Enter new value here"
 ValChangerBox.Text = ""
 ValChangerBox.TextColor3 = Color3.new(0, 0, 0)
 ValChangerBox.TextSize = 20
@@ -3590,8 +3694,11 @@ ValChanger = function(what,index,value,func,valtype)
         ChangerLabel.ZIndex = -1
         ChangerLabelShadow.ZIndex = -1
         PrevValLabel.ZIndex = -1
+        PrevValLabel:FindFirstChildOfClass("TextLabel").ZIndex = -1
         ValChangerBox.ZIndex = -1
+        ValChangerBox:FindFirstChildOfClass("TextLabel").ZIndex = -1
         ValChangerFrame.Visible = false
+        ValChangerBox.Text = ""
     end
     local con
     con = ValChangerBox.InputBegan:Connect(function()
@@ -3609,7 +3716,9 @@ ValChanger = function(what,index,value,func,valtype)
         ChangerLabel.ZIndex = -1
         ChangerLabelShadow.ZIndex = -1
         PrevValLabel.ZIndex = -1
+        PrevValLabel:FindFirstChildOfClass("TextLabel").ZIndex = -1
         ValChangerBox.ZIndex = -1
+        ValChangerBox:FindFirstChildOfClass("TextLabel").ZIndex = -1
         ValChangerFrame.Visible = false
         con:Disconnect()
         con2:Disconnect()
@@ -3619,7 +3728,9 @@ ValChanger = function(what,index,value,func,valtype)
     ChangerLabel.ZIndex = 999999
     ChangerLabelShadow.ZIndex = 999993
     PrevValLabel.ZIndex = 999999
+    PrevValLabel:FindFirstChildOfClass("TextLabel").ZIndex = 999999
     ValChangerBox.ZIndex = 999999
+    ValChangerBox:FindFirstChildOfClass("TextLabel").ZIndex = 999999
 end
 local mt = getrawmetatable(game)
 setreadonly(mt,false)
@@ -4210,6 +4321,13 @@ UserInputService.InputChanged:Connect(function(input)
     end
 end)
 
+for i,v in pairs(SRS:GetDescendants()) do
+    if v:IsA("TextBox") then
+        ScriptingBox(v)
+        wait()
+    end
+end
+ScriptingBox(PrevValLabel)
 if PROTECT_LOL then
     for i,v in pairs(SRS:GetDescendants()) do
         v.Name = syn.crypt.random(100)
