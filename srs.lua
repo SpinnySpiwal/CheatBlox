@@ -5,7 +5,7 @@ for i,v in pairs(getconnections(game:GetService("ScriptContext").Error)) do
     v:Disable()
 end
 for i,v in pairs(getconnections(game:GetService("LogService").MessageOut)) do
-    v:Disable()
+    if v.ForeignState == false then v:Disable() end
 end
 local PROTECT_LOL = true
 local SRS = Instance.new("ScreenGui")
@@ -24,16 +24,19 @@ local SRS_ENABLED = true
 if not _G.SRS_COLOR then _G.SRS_COLOR = "gray" end
 local COLOR_SCHEME = Color3.fromRGB(COLOR_SCHEME_OPTIONS[_G.SRS_COLOR][1],COLOR_SCHEME_OPTIONS[_G.SRS_COLOR][2],COLOR_SCHEME_OPTIONS[_G.SRS_COLOR][3])
 local COLOR_SCHEME_RAW = COLOR_SCHEME_OPTIONS[_G.SRS_COLOR]
+
 --// Support //--
 
 local getcallingfunction = function(stack)
     return debug.getinfo(stack + 1).func or debug.getinfo(stack + 1)["function"] or debug.getinfo(stack + 1)["Function"]
 end
 if not syn then syn = {} end
+if not syn.crypt then syn.crypt = {} end
 local getcontext = getcontext or syn.get_thread_identity or getthreadcontext
 local setcontext = setcontext or syn.set_thread_identity or setthreadcontext
 local toclipboard = syn.write_clipboard or setclipboard or toclipboard or write_clipboard
 local is_synapse_function = is_synapse_function or isexecutorclosure
+local ran_gen = syn.crypt.random or crypt.generatebytes or function() return tostring(math.random(1,100)) end
 local decompile = function(...)
     local args1231 = {...}
     local ret
@@ -52,7 +55,6 @@ local function ScriptingBox(box)
         placetext = box.PlaceholderText
         placecolor = box.PlaceholderColor3
     end)
-    box.RichText = true
     local label = Instance.new("TextLabel")
     label.ZIndex = box.ZIndex + 1
     label.AnchorPoint = box.AnchorPoint
@@ -93,6 +95,7 @@ local function ScriptingBox(box)
     }
     local change
     change = function()
+    	label.ZIndex = box.ZIndex + 1
         label.Text = ""
         local ok = box.Text
         if ok == "" or ok == " " or not ok then
@@ -146,7 +149,8 @@ local function ScriptingBox(box)
     end
     box.Changed:Connect(change)
     change()
-    label.Parent = box
+    label.Parent = box.Parent
+    return label
 end
 local function call_func(func,...)
     setcontext(6)
@@ -3645,7 +3649,7 @@ ValChanger = function(what,index,value,func,valtype)
     local trychange = function()
         if ValChangerBox.Text == nil or ValChangerBox.Text == "" or ValChangerBox.Text == " " then return end
         local newval = loadstring("return "..ValChangerBox.Text)()
-        if not newval then error("invalid newval") end
+        if not newval then return end
         if what == "Upvalue" then
             if valtype == "table" and type(newval) == "table" then
                 local hax_tbl = debug.getupvalue(func,index)
@@ -3694,9 +3698,7 @@ ValChanger = function(what,index,value,func,valtype)
         ChangerLabel.ZIndex = -1
         ChangerLabelShadow.ZIndex = -1
         PrevValLabel.ZIndex = -1
-        PrevValLabel:FindFirstChildOfClass("TextLabel").ZIndex = -1
         ValChangerBox.ZIndex = -1
-        ValChangerBox:FindFirstChildOfClass("TextLabel").ZIndex = -1
         ValChangerFrame.Visible = false
         ValChangerBox.Text = ""
     end
@@ -3716,9 +3718,7 @@ ValChanger = function(what,index,value,func,valtype)
         ChangerLabel.ZIndex = -1
         ChangerLabelShadow.ZIndex = -1
         PrevValLabel.ZIndex = -1
-        PrevValLabel:FindFirstChildOfClass("TextLabel").ZIndex = -1
         ValChangerBox.ZIndex = -1
-        ValChangerBox:FindFirstChildOfClass("TextLabel").ZIndex = -1
         ValChangerFrame.Visible = false
         con:Disconnect()
         con2:Disconnect()
@@ -3728,9 +3728,7 @@ ValChanger = function(what,index,value,func,valtype)
     ChangerLabel.ZIndex = 999999
     ChangerLabelShadow.ZIndex = 999993
     PrevValLabel.ZIndex = 999999
-    PrevValLabel:FindFirstChildOfClass("TextLabel").ZIndex = 999999
     ValChangerBox.ZIndex = 999999
-    ValChangerBox:FindFirstChildOfClass("TextLabel").ZIndex = 999999
 end
 local mt = getrawmetatable(game)
 setreadonly(mt,false)
@@ -4330,7 +4328,7 @@ end
 ScriptingBox(PrevValLabel)
 if PROTECT_LOL then
     for i,v in pairs(SRS:GetDescendants()) do
-        v.Name = syn.crypt.random(100)
+        v.Name = ran_gen(100)
     end
-    SRS.Name = syn.crypt.random(100)
+    SRS.Name = ran_gen(100)
 end
