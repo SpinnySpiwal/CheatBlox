@@ -43,6 +43,8 @@ end
 ---// Data of RemoteSpy //---
 
 local ChangelogText = [[
+Press F8 to Hide.
+
 <b>Changelog:</b>
 
 
@@ -51,8 +53,6 @@ local ChangelogText = [[
 <b>+</b> Debug tab now supports protos.
 <b>+</b> Scripts tab.
 <b>+</b> More right-clicking options.
-
-
 
 
 
@@ -1829,6 +1829,19 @@ MakeCoolButton = function(d)
         end)
     end
 end
+UserInputService.InputBegan:Connect(function(Tinfo,bool)
+    if bool then return end
+    if HideCooldown then return end
+    if Tinfo.KeyCode == Enum.KeyCode.F8 then
+        HideCooldown = true
+        MainFrame.Visible = Hidden
+        Hidden = not Hidden
+        spawn(function()
+            wait(0.2)
+            HideCooldown = false
+        end)
+    end
+end)
 for i,v in pairs(CheatBlox:GetDescendants()) do
     MakeCoolButton(v)
 end
