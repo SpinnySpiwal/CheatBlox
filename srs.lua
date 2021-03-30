@@ -249,6 +249,7 @@ local GetPath
 GetPath = function(Instance,pass)
     if Instance == game then return "game" end
     if Instance == workspace then return "workspace" end
+    if Instance.Parent == game then return 'game["'..tostring(Instance)..'"]' end
     if Instance == LP and not pass then return "game:GetService(\"Players\").LocalPlayer" end
     if Instance == LP.Character and not pass then return "game:GetService(\"Players\").LocalPlayer.Character" end
     if typeof(Instance) == "Instance" then
@@ -321,7 +322,10 @@ GetType = function(Instance)
             return tostring(Instance)
         end,
         ["userdata"] = function()
-            return "[USERDATA]"
+            return "newproxy(false)"
+        end,
+        ["table"] = function()
+        	return (#Instance == 0 and "{}") or tostring(Instance)
         end
     }
     if Types[string.lower(typeof(Instance))] ~= nil then
@@ -335,8 +339,8 @@ TableString = function(T,N)
     if not N then N = 1 end
     local M = {}
     for i, v in pairs(T) do
-        local I = "\n"..string.rep("    ",N).. (type(i) == "number" and "[" .. tostring(i) .. "] = " or "[\"" .. tostring(i) .. "\"] = ")
-        table.insert(M, tostring(I) .. (type(v) == "table" and  T ~= v and T ~= i and N < 100 and TableString(v,N+1) or ValueToString(v)))
+        local I = "\n"..string.rep("    ",N).."[".. ValueToString(i) .. "] = "
+        table.insert(M, tostring(I) .. (type(v) == "table" and N < 100 and TableString(v,N+1) or ValueToString(v)))
     end
     local str_to_ret = "{" .. table.concat(M, ", ") .. "\n"..string.rep("    ",N-1).."}"
     if #str_to_ret > 100000 then
@@ -475,22 +479,32 @@ local function GetFuncName(func)
     return name
 end
 ValueToString = function(val)
+	if val == "\00" then
+		return '"\\00"'
+	end
+	if type(val) == "table" and #val == 0 then
+		return "{}"
+	end
+    if val == math.huge then
+    	return "math.huge"
+    end
+    if val == -math.huge then
+    	return "-math.huge"
+    end
+    if val == math.huge/math.huge then
+    	return "math.huge/math.huge"
+    end
+    if val == nil then
+    	return "nil"
+    end
     local tostr_val = ""
     if type(val) == "function" then
         tostr_val = "[?]"
         pcall(function()
-            tostr_val = GetFuncName(Val)
+            tostr_val = GetFuncName(val)
         end)
         if tostr_val == "" or tostr_val == " "or tostr_val == nil then
             tostr_val = "[?]"
-        end
-        if f_name ~= "[?]" then
-            for i,v in pairs(getrenv()) do
-                if v == val then
-                    tostr_val = "getrenv()."..tostr_val
-                    break
-                end
-            end
         end
         tostr_val = tostr_val.."(#"..tostring(debug.getinfo(val).numparams)..")"
         if not islclosure(val) then
@@ -1075,6 +1089,8 @@ local ToScript = function(object,scr,fnc,method, ...)
             else
                 script = script..TableString(v)
             end
+        elseif type(v) == "function" then
+        	script = script.."nil"
         else
             script = script..ValueToString(v)
         end
