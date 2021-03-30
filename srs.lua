@@ -88,6 +88,7 @@ end
 local getscriptfunction = getscriptfunction or getscriptclosure
 if not syn then syn = {} end
 if not syn.crypt then syn.crypt = {} end
+if not crypt then crypt = {} end
 local getcontext = getcontext or syn.get_thread_identity or getthreadcontext
 local setcontext = setcontext or syn.set_thread_identity or setthreadcontext
 local toclipboard = syn.write_clipboard or setclipboard or toclipboard or write_clipboard
