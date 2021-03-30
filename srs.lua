@@ -44,6 +44,7 @@ end
 
 local ChangelogText = [[
 Press F8 to Hide.
+Right-click a logged remote, click "Send to Debug", then go to Debug tab to edit upvalues,constants,etc.
 
 <b>Changelog:</b>
 
@@ -53,7 +54,6 @@ Press F8 to Hide.
 <b>+</b> Debug tab now supports protos.
 <b>+</b> Scripts tab.
 <b>+</b> More right-clicking options.
-
 
 
 
