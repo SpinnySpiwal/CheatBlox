@@ -220,6 +220,9 @@ local ScriptingBox = function(box)
                 end
             end
         end
+        if #string.split(box.Text,"\n") > 30 then
+            label.Text = "[OUTPUT TOO BIG, PLEASE COPY]"
+        end
     end
     box.Changed:Connect(change)
     change()
