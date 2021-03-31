@@ -220,9 +220,6 @@ local ScriptingBox = function(box)
                 end
             end
         end
-        if #string.split(box.Text,"\n") > 30 then
-            label.Text = "[OUTPUT TOO BIG, PLEASE COPY]"
-        end
     end
     box.Changed:Connect(change)
     change()
@@ -326,7 +323,7 @@ GetType = function(Instance)
             return "newproxy(false)"
         end,
         ["table"] = function()
-        	return (#Instance == 0 and "{}") or tostring(Instance)
+        	return (Instance == {} and "{}") or "{...}"
         end
     }
     if Types[string.lower(typeof(Instance))] ~= nil then
@@ -483,7 +480,7 @@ ValueToString = function(val)
 	if val == "\00" then
 		return '"\\00"'
 	end
-	if type(val) == "table" and #val == 0 then
+	if type(val) == "table" and val == {} then
 		return "{}"
 	end
     if val == math.huge then
@@ -1071,10 +1068,14 @@ UpdateScripts = function()
     end
     RemoteLogsFrame.CanvasSize = UDim2.new(0,0,0,#ScriptListLogsFrame:GetChildren()*20)
 end
-local ToScript = function(object,scr,fnc,method, ...)
+local ToScript = function(object,scr,fnc,method,hidden, ...)
     local script = "--// Script: "..GetPath(scr)
     local f_name = ValueToString(fnc)
-    script = script.."\n--// Function: "..f_name.."\n\n"
+    script = script.."\n--// Function: "..f_name.."\n"
+    if hidden then
+    	script = script.."--// Hidden (Index Firing)\n"
+    end
+    script = script.."\n"
     local args = {}
     local stuff_idk = {...}
     for i = 1,#stuff_idk do
@@ -1150,7 +1151,7 @@ local OnScript = function(MAIN_INFO)
         elseif MAIN_INFO["Type"] == 2 then
             ScriptSpyOutputBox.Text = "--// Script: "..ValueToString(MAIN_INFO["scr"]).."\nSelf: "..ValueToString(MAIN_INFO["Self"]).."\nIndex: "..tostring(MAIN_INFO["Index"]).."\nValue: "..ValueToString(MAIN_INFO["Val"])
         else
-            ScriptSpyOutputBox.Text = ToScript(MAIN_INFO["Self"],MAIN_INFO["scr"],MAIN_INFO["Function"],MAIN_INFO["Method"],unpack(MAIN_INFO["Args"]))
+            ScriptSpyOutputBox.Text = ToScript(MAIN_INFO["Self"],MAIN_INFO["scr"],MAIN_INFO["Function"],MAIN_INFO["Method"],false,unpack(MAIN_INFO["Args"]))
         end
     end)
     scr_button.MouseButton2Click:Connect(function()
@@ -1200,7 +1201,7 @@ local FireServerHook = newcclosure(function(self,...)
         ["method"] = "FireServer",
         ["Hidden"] = true,
         ["Function"] = getcallingfunction(3),
-        ["ToScript"] = ToScript(self,scr,getcallingfunction(3),"FireServer",unpack(args))
+        ["ToScript"] = ToScript(self,scr,getcallingfunction(3),"FireServer",true,unpack(args))
     }
     remote_bindable.Fire(remote_bindable,"OnRemote",RemoteStuff)
     return FireServerBackup(self,...)
@@ -1232,7 +1233,7 @@ local InvokeServerHook = newcclosure(function(self,...)
         ["method"] = "InvokeServer",
         ["Hidden"] = true,
         ["Function"] = getcallingfunction(3),
-        ["ToScript"] = ToScript(self,scr,getcallingfunction(3),"InvokeServer",unpack(args))
+        ["ToScript"] = ToScript(self,scr,getcallingfunction(3),"InvokeServer",true,unpack(args))
     }
     remote_bindable.Fire(remote_bindable,"OnRemote",RemoteStuff)
     return InvokeServerBackup(self,...)
@@ -1274,7 +1275,7 @@ mt.__namecall = newcclosure(function(self,...)
             ["args"] = args,
             ["method"] = "FireServer",
             ["Function"] = getcallingfunction(3),
-            ["ToScript"] = ToScript(self,scr,getcallingfunction(3),"FireServer",unpack(args))
+            ["ToScript"] = ToScript(self,scr,getcallingfunction(3),"FireServer",false,unpack(args))
         }
         remote_bindable:Fire("OnRemote",RemoteStuff)
     end
@@ -1296,7 +1297,7 @@ mt.__namecall = newcclosure(function(self,...)
             ["args"] = args,
             ["method"] = "InvokeServer",
             ["Function"] = getcallingfunction(3),
-            ["ToScript"] = ToScript(self,scr,getcallingfunction(3),"InvokeServer",unpack(args))
+            ["ToScript"] = ToScript(self,scr,getcallingfunction(3),"InvokeServer",false,unpack(args))
         }
         remote_bindable.Fire(remote_bindable,"OnRemote",RemoteStuff)
     end
@@ -1550,8 +1551,6 @@ SearchValButton.MouseButton1Click:Connect(function()
     local to_search_val_type = ValTypeBox.Text
     if not to_search_val or to_search_val == "" then return end
     if not to_search_val_type or not search_types[to_search_val_type] then return end
-    print("UGH")
-    print(to_search_val_type)
     if to_search_val_type == "prop" then
         local literally_everything = {}
         if LP.Character then
@@ -1604,9 +1603,7 @@ SearchValButton.MouseButton1Click:Connect(function()
         end
         for i2,v2 in pairs(literally_everything) do
             if v2.ClassName:find("Text") and v2.ClassName ~= "UITextSizeConstraint" and v2.ClassName ~= "Texture" then
-                print("ok1")
                 if v2.Text == to_search_val or string.find(string.lower(v2.Text),string.lower(tostring(to_search_val))) then
-                    print("ok2")
                     local val_button = CreateButtonLog(v2.Text,Color3.new(0,1,1),"")
                     val_button.Position = UDim2.new(0,0,0,#ValLogsFrame:GetChildren()*20)
                     val_button.MouseButton1Click:Connect(function()
