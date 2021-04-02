@@ -224,7 +224,7 @@ local ScriptingBox = function(box)
             label.Text = "[OUTPUT TOO BIG, PLEASE COPY]"
         end
     end
-    box.Changed:Connect(change)
+    box:GetPropertyChangedSignal("Text"):Connect(change)
     change()
     label.Parent = box.Parent
     return label
