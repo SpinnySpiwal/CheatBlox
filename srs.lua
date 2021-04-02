@@ -1051,12 +1051,13 @@ UpdateScripts = function()
     for i,v in pairs(getscripts()) do
     	if v:IsA("LocalScript") then
     		if string.find(string.lower(v.Name),"chat") or string.find(string.lower(v.Name),"camera") or v:IsDescendantOf(game.Chat) then continue end
+    		if v.Parent == nil and v.Name == "LocalScript" and string.find(decompile(v),"Synapse X generated script") then continue end
     		table.insert(FoundScripts,v)
     	end
     end
     for i,v in pairs(getscripts()) do
     	if v:IsA("ModuleScript") then
-    		if string.find(string.lower(v.Name),"chat") or string.find(string.lower(v.Name),"camera") or string.find(string.lower(v.Name),"control") or string.find(string.lower(v.Name),"poppercam") or v:IsDescendantOf(game.Chat) then continue end
+    		if string.find(string.lower(v.Name),"chat") or string.find(string.lower(v.Name),"camera") or string.find(string.lower(v.Name),"control") or string.find(string.lower(v.Name),"poppercam") or string.find(string.lower(v.Name),"message") or v:IsDescendantOf(game.Chat) then continue end
     		table.insert(FoundScripts,v)
     	end
     end
