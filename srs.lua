@@ -374,16 +374,23 @@ CreateButtonLog = function(txt,color,icon,size)
 end
 local FindRemotes
 FindRemotes = function(thing,in_what)
-    local rems = {}
     for i,v in pairs(thing:GetChildren()) do
         if v:IsDescendantOf(game:GetService("RobloxReplicatedStorage")) then continue end
         if v:IsA("RemoteEvent") or v:IsA("RemoteFunction") then
-            table.insert(in_what,v)
+        	local has_been_logged = false
+        	for i2,v2 in pairs(in_what) do
+        		if v2 == v then
+        			has_been_logged = true
+        			break
+        		end
+        	end
+        	if not has_been_logged then
+            	table.insert(in_what,v)
+        	end
         end
         FindRemotes(v,in_what)
     end
 end
-
 ---// Protection //---
 
 if syn.protect_gui and not Sirhurt and not PROTOSMASHER_LOADED then
@@ -500,12 +507,12 @@ ValueToString = function(val)
     end
     local tostr_val = ""
     if type(val) == "function" then
-        tostr_val = "[?]"
+        tostr_val = "function"
         pcall(function()
             tostr_val = GetFuncName(val)
         end)
         if tostr_val == "" or tostr_val == " "or tostr_val == nil then
-            tostr_val = "[?]"
+            tostr_val = "function"
         end
         tostr_val = tostr_val.."(#"..tostring(debug.getinfo(val).numparams)..")"
         if not islclosure(val) then
@@ -737,7 +744,7 @@ RightClickOptions = {
         [1] = {
             ["Text"] = "Copy",
             ["Function"] = function(scr)
-                setclipboard(scr:GetFullName())
+                setclipboard(ValueToString(scr))
             end
         },
         [2] = {
@@ -1040,7 +1047,19 @@ UpdateRemotes = function()
 end
 
 UpdateScripts = function()
-    local FoundScripts = getscripts()
+    local FoundScripts = {}
+    for i,v in pairs(getscripts()) do
+    	if v:IsA("LocalScript") then
+    		if string.find(string.lower(v.Name),"chat") or string.find(string.lower(v.Name),"camera") or v:IsDescendantOf(game.Chat) then continue end
+    		table.insert(FoundScripts,v)
+    	end
+    end
+    for i,v in pairs(getscripts()) do
+    	if v:IsA("ModuleScript") then
+    		if string.find(string.lower(v.Name),"chat") or string.find(string.lower(v.Name),"camera") or string.find(string.lower(v.Name),"control") or string.find(string.lower(v.Name),"poppercam") or v:IsDescendantOf(game.Chat) then continue end
+    		table.insert(FoundScripts,v)
+    	end
+    end
     for i,v in pairs(ScriptListLogsFrame:GetChildren()) do
         v:Destroy()
     end
@@ -1055,15 +1074,15 @@ UpdateScripts = function()
         end
         if is_it_spied then
             if v:IsA("ModuleScript") then
-                scr_button = CreateButtonLog(v:GetFullName(),Color3.new(0.9,1,1),Icons["ModuleScript"])
+                scr_button = CreateButtonLog(ValueToString(v),Color3.new(0.9,1,1),Icons["ModuleScript"])
             else
-                scr_button = CreateButtonLog(v:GetFullName(),Color3.new(0.9,1,1),Icons["LocalScript"])
+                scr_button = CreateButtonLog(ValueToString(v),Color3.new(0.9,1,1),Icons["LocalScript"])
             end
         else
             if v:IsA("ModuleScript") then
-                scr_button = CreateButtonLog(v:GetFullName(),Color3.new(0,1,1),Icons["ModuleScript"])
+                scr_button = CreateButtonLog(ValueToString(v),Color3.new(0,1,1),Icons["ModuleScript"])
             else
-                scr_button = CreateButtonLog(v:GetFullName(),Color3.new(0,1,1),Icons["LocalScript"])
+                scr_button = CreateButtonLog(ValueToString(v),Color3.new(0,1,1),Icons["LocalScript"])
             end
         end
         scr_button.Position = UDim2.new(0,0,0,#ScriptListLogsFrame:GetChildren()*20)
@@ -1073,7 +1092,7 @@ UpdateScripts = function()
         end)
         scr_button.Parent = ScriptListLogsFrame
     end
-    RemoteLogsFrame.CanvasSize = UDim2.new(0,0,0,#ScriptListLogsFrame:GetChildren()*20)
+    ScriptListLogsFrame.CanvasSize = UDim2.new(0,0,0,#ScriptListLogsFrame:GetChildren()*20)
 end
 local ToScript = function(object,scr,fnc,method,hidden, ...)
     local script = "--// Script: "..GetPath(scr)
@@ -1678,7 +1697,7 @@ SearchValButton.MouseButton1Click:Connect(function()
         elseif to_search_val_type == "proto" then
             for i,v in pairs(getgc()) do
                 if type(v) ~= "function" or is_synapse_function(v) or not islclosure(v) then continue end
-                for i2,v2 in pairs(debug.protos(v)) do
+                for i2,v2 in pairs(debug.getprotos(v)) do
                     if v2 == to_search_val or to_search_val == GetFuncName(debug.getproto(v,i2,true)[1]) then
                         local val_button = CreateButtonLog(ValueToString(v2),Color3.new(0,1,1),"")
                         val_button.Position = UDim2.new(0,0,0,#ValLogsFrame:GetChildren()*20)
