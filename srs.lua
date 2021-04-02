@@ -54,11 +54,11 @@ Right-click a logged remote, click "Send to Debug", then go to Debug tab to edit
 <b>+</b> Debug tab now supports protos.
 <b>+</b> Scripts tab.
 <b>+</b> More right-clicking options.
+<b>*</b> Fixed value scanner.
 
 
-
-
-Made By <b>Stefan#6965</b>.
+Made By <b>Stefan#6965</b>
+Discord Code: NRYJj9STbq
 ]]
 local IgnoredRemotes = {}
 local SelectedRemote
@@ -582,10 +582,10 @@ RightClickOptions = {
             ["Text"] = "To Script",
             ["Function"] = function(func)
                 local str = "local function ReturnFunc()\n    for i,v in pairs(getgc()) do\n        if type(v) == \"function\" and not is_synapse_function(v) and islclosure(v) then\n"
-                str = str.."            if #debug.getupvalues(v) == "..tostring(#debug.getupvalues(func)).." and #debug.getconstants(v) == "..tostring(#debug.getconstants(func)) -- add more conds
+                str = str.."            if #debug.getconstants(v) == "..tostring(#debug.getconstants(func)) -- add more conds
                 local capped_stuff = 0
                 for i,v in pairs(debug.getconstants(func)) do
-                    if capped_stuff > 40 then break end
+                    if capped_stuff >= 10 then break end
                     if type(v) == "string" then
                         str = str.." and debug.getconstants(v)["..tostring(i).."] == [["..tostring(v).."]]"
                         capped_stuff = capped_stuff + 1
@@ -604,7 +604,7 @@ RightClickOptions = {
             ["Function"] = function(func)
                 local found_funcs = {}
                 for i,v in pairs(getgc()) do
-                    if type(v) == "function" and v ~= func and not is_synapse_function(v) and islclosure(v) and (#debug.getupvalues(v) == 0 or #debug.getconstants(v) == 0) then
+                    if type(v) == "function" and v ~= func and not is_synapse_function(v) and islclosure(v) then
                         local dup = false
                         for i2,v2 in pairs(found_funcs) do
                             if v == v2 then
@@ -612,7 +612,7 @@ RightClickOptions = {
                                 break
                             end
                         end
-                        if not dup and not (tostring(getfenv(v)["script"]) ~= tostring(getfenv(func)["script"])) then
+                        if not dup and (tostring(getfenv(v)["script"]) == tostring(getfenv(func)["script"])) then
                             table.insert(found_funcs,v)
                         end
                         for i2,v2 in pairs(debug.getupvalues(v)) do
@@ -626,7 +626,7 @@ RightClickOptions = {
                                     if type(N) == "number" and N > 5 then return end
                                     if not N then N = 0 end
                                     for i3,v3 in pairs(tbl) do
-                                        if type(v3) == "function" and v3 ~= func and not is_synapse_function(v3) and islclosure(v3) and (#debug.getupvalues(v3) == 0 or #debug.getconstants(v3) == 0) then
+                                        if type(v3) == "function" and v3 ~= func and not is_synapse_function(v3) and islclosure(v3) then
                                             if not (tostring(getfenv(v3)["script"]) ~= tostring(getfenv(func)["script"])) then
                                                 table.insert(found_funcs,v3)
                                             end
@@ -649,7 +649,7 @@ RightClickOptions = {
                                     if type(N) == "number" and N > 5 then return end
                                     if not N then N = 0 end
                                     for i3,v3 in pairs(tbl) do
-                                        if type(v3) == "function" and v3 ~= func and not is_synapse_function(v3) and islclosure(v3) and (#debug.getupvalues(v3) == 0 or #debug.getconstants(v3) == 0) then
+                                        if type(v3) == "function" and v3 ~= func and not is_synapse_function(v3) and islclosure(v3) then
                                             if not (tostring(getfenv(v3)["script"]) ~= tostring(getfenv(func)["script"])) then
                                                 table.insert(found_funcs,v3)
                                             end
@@ -937,11 +937,7 @@ LogFunction = function(func)
                 PromptValueChange(func,"Proto",i,v)
             end)
             val_button.MouseButton2Click:Connect(function()
-                if type(v) == "function" then
-                    RightClick(val_button,"DebugFunc",{debug.getproto(func,i,true),func})
-                else
-                    RightClick(val_button,"DebugVal",{debug.getproto(func,i,true),func})
-                end
+                RightClick(val_button,"DebugFunc",{debug.getproto(func,i,true)[1],func})
             end)
             val_button.Parent = ProtoLogsFrame
         end
@@ -1683,7 +1679,7 @@ SearchValButton.MouseButton1Click:Connect(function()
             for i,v in pairs(getgc()) do
                 if type(v) ~= "function" or is_synapse_function(v) or not islclosure(v) then continue end
                 for i2,v2 in pairs(debug.protos(v)) do
-                    if v2 == to_search_val or to_search_val == GetFuncName(debug.getproto(v,i2,true)) then
+                    if v2 == to_search_val or to_search_val == GetFuncName(debug.getproto(v,i2,true)[1]) then
                         local val_button = CreateButtonLog(ValueToString(v2),Color3.new(0,1,1),"")
                         val_button.Position = UDim2.new(0,0,0,#ValLogsFrame:GetChildren()*20)
                         val_button.MouseButton1Click:Connect(function()
@@ -1723,7 +1719,7 @@ SearchValButton.MouseButton1Click:Connect(function()
             end
         elseif to_search_val_type == "table" then
             for i,v in pairs(getgc(true)) do
-                if type(v) ~= "table" or #v > 50 then
+                if type(v) == "table" and #v < 50 then
                     for i2,v2 in pairs(v) do
                         if v2 == to_search_val then
                             local val_button = CreateButtonLog(ValueToString(v2),Color3.new(0,1,1),"")
