@@ -326,7 +326,7 @@ GetType = function(Instance)
             return "newproxy(false)"
         end,
         ["table"] = function()
-        	return (Instance == {} and "{}") or "{...}"
+            return (Instance == {} and "{}") or "{...}"
         end
     }
     if Types[string.lower(typeof(Instance))] ~= nil then
@@ -480,23 +480,23 @@ local function GetFuncName(func)
     return name
 end
 ValueToString = function(val)
-	if val == "\00" then
-		return '"\\00"'
-	end
-	if type(val) == "table" and val == {} then
-		return "{}"
-	end
+    if val == "\00" then
+        return '"\\00"'
+    end
+    if type(val) == "table" and val == {} then
+        return "{}"
+    end
     if val == math.huge then
-    	return "math.huge"
+        return "math.huge"
     end
     if val == -math.huge then
-    	return "-math.huge"
+        return "-math.huge"
     end
     if val == math.huge/math.huge then
-    	return "math.huge/math.huge"
+        return "math.huge/math.huge"
     end
     if val == nil then
-    	return "nil"
+        return "nil"
     end
     local tostr_val = ""
     if type(val) == "function" then
@@ -775,7 +775,15 @@ RightClickOptions = {
                 UpdateScripts()
             end
         }
-    } 
+    },
+    ["Prop"] = {
+        [1] = {
+            ["Text"] = "Copy Path",
+            ["Function"] = function(thing)
+                toclipboard(thing:GetFullName())
+            end
+        }
+    }
 }
 
 
@@ -791,11 +799,11 @@ RightClickOptions = {
 
 
 
-local function GetRightClickOptions(wat)
+local GetRightClickOptions = function(wat)
     return RightClickOptions[wat]
 end
 
-local function NewRightClickFrame(stuff,args)
+local NewRightClickFrame = function(stuff,args)
     local rc_frame = Instance.new("Frame")
     rc_frame.ZIndex = 999999999
     rc_frame.BorderColor3 = Color3.new(0,0,0)
@@ -1076,7 +1084,7 @@ local ToScript = function(object,scr,fnc,method,hidden, ...)
     local f_name = ValueToString(fnc)
     script = script.."\n--// Function: "..f_name.."\n"
     if hidden then
-    	script = script.."--// Hidden (Index Firing)\n"
+        script = script.."--// Hidden (Index Firing)\n"
     end
     script = script.."\n"
     local args = {}
@@ -1095,7 +1103,7 @@ local ToScript = function(object,scr,fnc,method,hidden, ...)
                 script = script..TableString(v)
             end
         elseif type(v) == "function" then
-        	script = script.."nil"
+            script = script.."nil"
         else
             script = script..ValueToString(v)
         end
@@ -1612,6 +1620,9 @@ SearchValButton.MouseButton1Click:Connect(function()
                     val_button.MouseButton1Click:Connect(function()
                         PromptValueChange(v2,"Prop","Text",v2.Text)
                     end)
+                    val_button.MouseButton2Click:Connect(function()
+                        RightClick(val_button,"Prop",{v2})
+                    end)
                     val_button.Parent = ValLogsFrame
                 end
             elseif v2.ClassName:sub(-5) == "Value" then
@@ -1626,91 +1637,102 @@ SearchValButton.MouseButton1Click:Connect(function()
             end
         end
     else
-        for i,v in pairs(getgc(true)) do
-            if type(v) == "function" and not is_synapse_function(v) and islclosure(v) then
-                if to_search_val_type == "upvalue" then
-                    for i2,v2 in pairs(debug.getupvalues(v)) do
-                        if v2 == to_search_val or (type(v2) == "string" and type(to_search_val) == "string" and string.find(string.lower(v2),string.lower(to_search_val))) then
-                            local val_button = CreateButtonLog(ValueToString(v2),Color3.new(0,1,1),"")
-                            val_button.Position = UDim2.new(0,0,0,#ValLogsFrame:GetChildren()*20)
-                            val_button.MouseButton1Click:Connect(function()
-                                PromptValueChange(v,"Upvalue",i2,v2)
-                            end)
-                            val_button.MouseButton2Click:Connect(function()
-                                if type(v2) == "function" then
-                                    RightClick(val_button,"DebugFunc",{v2,v})
-                                else
-                                    RightClick(val_button,"DebugVal",{v2,v})
-                                end
-                            end)
-                            val_button.Parent = ValLogsFrame
-                        end
-                    end
-                elseif to_search_val_type == "constant" then
-                    for i2,v2 in pairs(debug.getconstants(v)) do
-                        if v2 == to_search_val or (type(v2) == "string" and type(to_search_val) == "string" and string.find(string.lower(v2),string.lower(to_search_val))) then
-                            local val_button = CreateButtonLog(ValueToString(v2),Color3.new(0,1,1),"")
-                            val_button.Position = UDim2.new(0,0,0,#ValLogsFrame:GetChildren()*20)
-                            val_button.MouseButton1Click:Connect(function()
-                                PromptValueChange(v,"Constant",i2,v2)
-                            end)
-                            val_button.MouseButton2Click:Connect(function()
-                                if type(v2) == "function" then
-                                    RightClick(val_button,"DebugFunc",{v2,v})
-                                else
-                                    RightClick(val_button,"DebugVal",{v2,v})
-                                end
-                            end)
-                            val_button.Parent = ValLogsFrame
-                        end
-                    end
-                elseif to_search_val_type == "proto" then
-                    for i2,v2 in pairs(debug.getconstants(v)) do
-                        if v2 == to_search_val or to_search_val == GetFuncName(debug.getproto(v,i2,true)) or (type(v2) == "string" and string.find(string.lower(v2),string.lower(to_search_val))) then
-                            local val_button = CreateButtonLog(ValueToString(v2),Color3.new(0,1,1),"")
-                            val_button.Position = UDim2.new(0,0,0,#ValLogsFrame:GetChildren()*20)
-                            val_button.MouseButton1Click:Connect(function()
-                                PromptValueChange(v,"Proto",i2,v2)
-                            end)
-                            val_button.MouseButton2Click:Connect(function()
-                                if type(v2) == "function" then
-                                    RightClick(val_button,"DebugFunc",{v2,v})
-                                else
-                                    RightClick(val_button,"DebugVal",{v2,v})
-                                end
-                            end)
-                            val_button.Parent = ValLogsFrame
-                        end
-                    end
-                elseif to_search_val_type == "global" then
-                    for i2,v2 in pairs(getfenv(v)) do
-                        if v2 == to_search_val or (type(v2) == "string" and string.find(string.lower(v2),string.lower(to_search_val))) or (type(i2) == "string" and to_search_val == i2) then
-                            local val_button = CreateButtonLog(ValueToString(v2),Color3.new(0,1,1),"")
-                            val_button.Position = UDim2.new(0,0,0,#ValLogsFrame:GetChildren()*20)
-                            val_button.MouseButton1Click:Connect(function()
-                                PromptValueChange(v,"Global",i2,v2)
-                            end)
-                            val_button.MouseButton2Click:Connect(function()
-                                if type(v2) == "function" then
-                                    RightClick(val_button,"DebugFunc",{v2,v})
-                                else
-                                    RightClick(val_button,"DebugVal",{v2,v})
-                                end
-                            end)
-                            val_button.Parent = ValLogsFrame
-                        end
-                    end
-                end
-            elseif type(v) == "table" and not getrawmetatable(v) and #v < 100 then
-                if to_search_val_type ~= "table" then return end
-                for i2,v2 in pairs(v) do
-                    if v2 == to_search_val then
+        if to_search_val_type == "upvalue" then
+            for i,v in pairs(getgc()) do
+                if type(v) ~= "function" or is_synapse_function(v) or not islclosure(v) then continue end
+                for i2,v2 in pairs(debug.getupvalues(v)) do
+                    if (v2 == to_search_val) or (type(v2) == "string" and type(to_search_val) == "string" and string.find(string.lower(v2),string.lower(to_search_val))) then
                         local val_button = CreateButtonLog(ValueToString(v2),Color3.new(0,1,1),"")
                         val_button.Position = UDim2.new(0,0,0,#ValLogsFrame:GetChildren()*20)
                         val_button.MouseButton1Click:Connect(function()
-                            PromptValueChange(v,"Table",i2,v2)
+                            PromptValueChange(v,"Upvalue",i2,v2)
+                        end)
+                        val_button.MouseButton2Click:Connect(function()
+                            if type(v2) == "function" then
+                                RightClick(val_button,"DebugFunc",{v2,v})
+                            else
+                                RightClick(val_button,"DebugVal",{v2,v})
+                            end
                         end)
                         val_button.Parent = ValLogsFrame
+                    end
+                end
+            end
+        elseif to_search_val_type == "constant" then
+            for i,v in pairs(getgc()) do
+                if type(v) ~= "function" or is_synapse_function(v) or not islclosure(v) then continue end
+                for i2,v2 in pairs(debug.getconstants(v)) do
+                    if (v2 == to_search_val) or (type(v2) == "string" and type(to_search_val) == "string" and string.find(string.lower(v2),string.lower(to_search_val))) then
+                        local val_button = CreateButtonLog(ValueToString(v2),Color3.new(0,1,1),"")
+                        val_button.Position = UDim2.new(0,0,0,#ValLogsFrame:GetChildren()*20)
+                        val_button.MouseButton1Click:Connect(function()
+                            PromptValueChange(v,"Constant",i2,v2)
+                        end)
+                        val_button.MouseButton2Click:Connect(function()
+                            if type(v2) == "function" then
+                                RightClick(val_button,"DebugFunc",{v2,v})
+                            else
+                                RightClick(val_button,"DebugVal",{v2,v})
+                            end
+                        end)
+                        val_button.Parent = ValLogsFrame
+                    end
+                end
+            end
+        elseif to_search_val_type == "proto" then
+            for i,v in pairs(getgc()) do
+                if type(v) ~= "function" or is_synapse_function(v) or not islclosure(v) then continue end
+                for i2,v2 in pairs(debug.protos(v)) do
+                    if v2 == to_search_val or to_search_val == GetFuncName(debug.getproto(v,i2,true)) then
+                        local val_button = CreateButtonLog(ValueToString(v2),Color3.new(0,1,1),"")
+                        val_button.Position = UDim2.new(0,0,0,#ValLogsFrame:GetChildren()*20)
+                        val_button.MouseButton1Click:Connect(function()
+                            PromptValueChange(v,"Proto",i2,v2)
+                        end)
+                        val_button.MouseButton2Click:Connect(function()
+                            if type(v2) == "function" then
+                                RightClick(val_button,"DebugFunc",{v2,v})
+                            else
+                                RightClick(val_button,"DebugVal",{v2,v})
+                            end
+                        end)
+                        val_button.Parent = ValLogsFrame
+                    end
+                end
+            end
+        elseif to_search_val_type == "global" then
+            for i,v in pairs(getgc()) do
+                if type(v) ~= "function" or is_synapse_function(v) or not islclosure(v) then continue end
+                for i2,v2 in pairs(getfenv(v)) do
+                    if v2 == to_search_val or (type(v2) == "string" and string.find(string.lower(v2),string.lower(to_search_val))) or (type(i2) == "string" and to_search_val == i2) then
+                        local val_button = CreateButtonLog(ValueToString(v2),Color3.new(0,1,1),"")
+                        val_button.Position = UDim2.new(0,0,0,#ValLogsFrame:GetChildren()*20)
+                        val_button.MouseButton1Click:Connect(function()
+                            PromptValueChange(v,"Global",i2,v2)
+                        end)
+                        val_button.MouseButton2Click:Connect(function()
+                            if type(v2) == "function" then
+                                RightClick(val_button,"DebugFunc",{v2,v})
+                            else
+                                RightClick(val_button,"DebugVal",{v2,v})
+                            end
+                        end)
+                        val_button.Parent = ValLogsFrame
+                    end
+                end
+            end
+        elseif to_search_val_type == "table" then
+            for i,v in pairs(getgc(true)) do
+                if type(v) ~= "table" or #v > 50 then
+                    for i2,v2 in pairs(v) do
+                        if v2 == to_search_val then
+                            local val_button = CreateButtonLog(ValueToString(v2),Color3.new(0,1,1),"")
+                            val_button.Position = UDim2.new(0,0,0,#ValLogsFrame:GetChildren()*20)
+                            val_button.MouseButton1Click:Connect(function()
+                                PromptValueChange(v,"Table",i2,v2)
+                            end)
+                            val_button.Parent = ValLogsFrame
+                        end
                     end
                 end
             end
