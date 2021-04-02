@@ -1051,7 +1051,7 @@ UpdateScripts = function()
     for i,v in pairs(getscripts()) do
     	if v:IsA("LocalScript") then
     		if string.find(string.lower(v.Name),"chat") or string.find(string.lower(v.Name),"camera") or v:IsDescendantOf(game.Chat) then continue end
-    		if v.Parent == nil and v.Name == "LocalScript" and string.find(decompile(v),"Synapse X generated script") then continue end
+    		if v.Parent == nil and v.Name == "LocalScript" then continue end
     		table.insert(FoundScripts,v)
     	end
     end
