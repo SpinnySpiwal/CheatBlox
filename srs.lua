@@ -266,6 +266,16 @@ GetPath = function(Instance,pass)
                 end
             end
             local almost = (Instance.Parent ~= game and ServiceToString(get_srv_a(Instance))) or ServiceToString(Instance)
+            local thing_name = newstuff[#newstuff]
+            local new_thing_name = ""
+            for i,v in pairs(string.split(thing_name,"")) do
+            	if v == "<" or v == ">" or v == "\n" or v == "\t" or (not string.match(v,"%a") and not string.match(v,"%p") and not string.match(v,"%s") and not string.match(v,"%d")) then
+            		new_thing_name = new_thing_name.."\\"..tostring(string.byte(v))
+            	else
+            		new_thing_name = new_thing_name..v
+            	end
+            end
+            newstuff[#newstuff] = new_thing_name
             for i,v in pairs(newstuff) do
                 if not string.split(v,"")[1] then
                     almost = almost.."[\"\"]"
@@ -310,10 +320,18 @@ GetType = function(Instance)
             return "Color3.new(" .. tostring(Instance) .. ")"
         end,
         ["string"] = function()
-            if string.find(Instance,"\"") or string.find(Instance,"'") or string.find(Instance,"\n") then
-                return "[["..tostring(Instance).."]]"
+        	local new_thing_name = ""
+            for i,v in pairs(string.split(Instance,"")) do
+            	if v == "<" or v == ">" or v == "\n" or v == "\t" or (not string.match(v,"%a") and not string.match(v,"%p") and not string.match(v,"%s") and not string.match(v,"%d")) then
+            		new_thing_name = new_thing_name.."\\"..tostring(string.byte(v))
+            	else
+            		new_thing_name = new_thing_name..v
+            	end
+            end
+            if string.find(new_thing_name,"\"") or string.find(new_thing_name,"'") or string.find(new_thing_name,"\n") then
+                return "[["..tostring(new_thing_name).."]]"
             else
-                return [["]]..tostring(Instance)..[["]]
+                return [["]]..tostring(new_thing_name)..[["]]
             end
         end,
         ["ray"] = function()
@@ -376,6 +394,7 @@ local FindRemotes
 FindRemotes = function(thing,in_what)
     for i,v in pairs(thing:GetChildren()) do
         if v:IsDescendantOf(game:GetService("RobloxReplicatedStorage")) then continue end
+        if v.Name == "CharacterSoundEvent" and v:IsDescendantOf(workspace) then continue end
         if v:IsA("RemoteEvent") or v:IsA("RemoteFunction") then
         	local has_been_logged = false
         	for i2,v2 in pairs(in_what) do
@@ -1017,15 +1036,15 @@ UpdateRemotes = function()
         end
         if IsRemIgnored then
             if v:IsA("RemoteEvent") then
-                rem_button = CreateButtonLog(v:GetFullName(),Color3.new(0.6,0.6,0.6),Icons["RemoteEvent"])
+                rem_button = CreateButtonLog(ValueToString(v),Color3.new(0.6,0.6,0.6),Icons["RemoteEvent"])
             else
-                rem_button = CreateButtonLog(v:GetFullName(),Color3.new(0.6,0.6,0.6),Icons["RemoteFunction"])
+                rem_button = CreateButtonLog(ValueToString(v),Color3.new(0.6,0.6,0.6),Icons["RemoteFunction"])
             end
         else
             if v:IsA("RemoteEvent") then
-                rem_button = CreateButtonLog(v:GetFullName(),Color3.new(1,1,0),Icons["RemoteEvent"])
+                rem_button = CreateButtonLog(ValueToString(v),Color3.new(1,1,0),Icons["RemoteEvent"])
             else
-                rem_button = CreateButtonLog(v:GetFullName(),Color3.new(1,0,1),Icons["RemoteFunction"])
+                rem_button = CreateButtonLog(ValueToString(v),Color3.new(1,0,1),Icons["RemoteFunction"])
             end
         end
         rem_button.Position = UDim2.new(0,0,0,#RemoteLogsFrame:GetChildren()*20)
