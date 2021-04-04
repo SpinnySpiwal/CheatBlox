@@ -561,7 +561,7 @@ end
 
 local RightClickOptions
 RightClickOptions = {
-    ["RemoteFire"] = {
+    ["FireRemote"] = {
         [1] = {
             ["Text"] = "Fire 10x",
             ["Function"] = function(rem,args)
@@ -571,6 +571,7 @@ RightClickOptions = {
                     else
                         rem:FireServer(unpack(args))
                     end
+                    game:GetService("RunService").RenderStepped:Wait()
                 end
             end
         },
@@ -583,18 +584,7 @@ RightClickOptions = {
                     else
                         rem:FireServer(unpack(args))
                     end
-                end
-            end
-        },
-        [3] = {
-            ["Text"] = "Fire 50x",
-            ["Function"] = function()
-                for i = 1,50 do
-                    if rem:IsA("RemoteFunction") then
-                        rem:InvokeServer(unpack(args))
-                    else
-                        rem:FireServer(unpack(args))
-                    end
+                    game:GetService("RunService").RenderStepped:Wait()
                 end
             end
         }
@@ -854,7 +844,9 @@ local NewRightClickFrame = function(stuff,args)
         local choise_button = CreateButtonLog(v.Text,Color3.new(1,1,1),"",16)
         choise_button.Position = UDim2.new(0,0,0,#rc_frame:GetChildren()*20)
         choise_button.MouseButton1Click:Connect(function()
-            v.Function(unpack(args))
+            spawn(function()
+                v.Function(unpack(args))
+            end)
             rc_frame:Remove()
             spawn(function()
                 wait(0.5)
