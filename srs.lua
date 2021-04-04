@@ -10,6 +10,12 @@
 repeat wait() until game and workspace and game:IsLoaded()
 if getgenv().CheatBloxRunning then return end
 getgenv().CheatBloxRunning = true
+for i,v in pairs(getconnections(game:GetService("ScriptContext").Error)) do
+    v:Disable()
+end
+for i,v in pairs(getconnections(game:GetService("LogService").MessageOut)) do
+    v:Disable()
+end`
 local CheatBlox = game:GetObjects("rbxassetid://6580324035")[1]
 wait()
 local LP = game:GetService("Players").LocalPlayer
@@ -246,6 +252,13 @@ end
 local ServiceToString = function(inst)
     return [[game:GetService("]]..inst.ClassName..[[")]]
 end
+local goddam_parse = {
+	["<"] = "&lt;",
+	[">"] = "&gt;",
+	["\""] = "&quot;",
+	["'"] = "&apos;",
+	["&"] = "&amp;"
+}
 local GetPath
 GetPath = function(Instance,pass)
     if Instance == game then return "game" end
@@ -269,7 +282,9 @@ GetPath = function(Instance,pass)
             local thing_name = newstuff[#newstuff]
             local new_thing_name = ""
             for i,v in pairs(string.split(thing_name,"")) do
-            	if v == "<" or v == ">" or v == "\n" or v == "\t" or (not string.match(v,"%a") and not string.match(v,"%p") and not string.match(v,"%s") and not string.match(v,"%d")) then
+            	if goddam_parse[v] then
+            		new_thing_name = new_thing_name..goddam_parse[v]
+            	elseif v == "<" or v == ">" or v == "\n" or v == "\t" or (not string.match(v,"%a") and not string.match(v,"%p") and not string.match(v,"%s") and not string.match(v,"%d")) then
             		new_thing_name = new_thing_name.."\\"..tostring(string.byte(v))
             	else
             		new_thing_name = new_thing_name..v
