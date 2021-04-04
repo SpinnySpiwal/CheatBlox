@@ -974,7 +974,7 @@ LogFunction = function(func)
             end)
             val_button.Parent = ProtoLogsFrame
         end
-        for i,v in pairs(debug.getfenv(func)) do
+        for i,v in pairs(getfenv(func)) do
             local val_button = CreateButtonLog(ValueToString(v),Color3.new(0,1,1),"")
             val_button.Position = UDim2.new(0,0,0,#EnvLogsFrame:GetChildren()*20)
             val_button.MouseButton1Click:Connect(function()
