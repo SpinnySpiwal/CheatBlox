@@ -51,6 +51,7 @@ end
 local ChangelogText = [[
 Press F8 to Hide.
 Right-click a logged remote, click "Send to Debug", then go to Debug tab to edit upvalues,constants,etc.
+Some elements are obscured by the menu frame, so be sure to rehide it.
 
 <b>Changelog:</b>
 
@@ -61,7 +62,6 @@ Right-click a logged remote, click "Send to Debug", then go to Debug tab to edit
 <b>+</b> Scripts tab.
 <b>+</b> More right-clicking options.
 <b>*</b> Fixed value scanner.
-
 
 Made By <b>Stefan#6965</b>
 Discord Code: NRYJj9STbq
