@@ -227,7 +227,7 @@ local ScriptingBox = function(box)
             end
         end
         if #string.split(box.Text,"\n") > 30 then
-            label.Text = "[OUTPUT TOO BIG, PLEASE COPY]"
+            label.Text = '[OUTPUT TOO BIG, PLEASE RIGHT CLICK THE REMOTE AND CLICK "Copy Script"]'
         end
     end
     box:GetPropertyChangedSignal("Text"):Connect(change)
@@ -758,13 +758,19 @@ RightClickOptions = {
     ["RemoteDebug"] = {
         [1] = {
             ["Text"] = "Copy",
-            ["Function"] = function(rem,func)
+            ["Function"] = function(rem,func,toscr)
                 setclipboard(rem:GetFullName())
             end
         },
         [2] = {
+            ["Text"] = "Copy",
+            ["Function"] = function(rem,func,toscr)
+                setclipboard(toscr)
+            end
+        },
+        [3] = {
             ["Text"] = "Send to Debug",
-            ["Function"] = function(rem,func)
+            ["Function"] = function(rem,func,toscr)
                 LogFunction(func)
             end
         }
@@ -1186,7 +1192,7 @@ local OnRemote = function(MAIN_INFO)
         RemoteOutputBox.Text = MAIN_INFO["ToScript"]
     end)
     rem_button.MouseButton2Click:Connect(function()
-        RightClick(rem_button,"RemoteDebug",{MAIN_INFO["rem"],MAIN_INFO["Function"]})
+        RightClick(rem_button,"RemoteDebug",{MAIN_INFO["rem"],MAIN_INFO["Function"],MAIN_INFO["ToScript"]})
     end)
     rem_button.Position = UDim2.new(0,0,0,#RemoteSpyLogsFrame:GetChildren()*20)
     rem_button.Parent = RemoteSpyLogsFrame
