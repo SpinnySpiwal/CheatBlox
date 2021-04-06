@@ -763,7 +763,7 @@ RightClickOptions = {
             end
         },
         [2] = {
-            ["Text"] = "Copy",
+            ["Text"] = "Copy Script",
             ["Function"] = function(rem,func,toscr)
                 setclipboard(toscr)
             end
