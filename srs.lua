@@ -11,10 +11,10 @@ repeat wait() until game and workspace and game:IsLoaded()
 if getgenv().CheatBloxRunning then return end
 getgenv().CheatBloxRunning = true
 for i,v in pairs(getconnections(game:GetService("ScriptContext").Error)) do
-    v:Disable()
+    --v:Disable()
 end
 for i,v in pairs(getconnections(game:GetService("LogService").MessageOut)) do
-    v:Disable()
+    --v:Disable()
 end
 local CheatBlox = game:GetObjects("rbxassetid://6580324035")[1]
 wait()
@@ -231,6 +231,10 @@ local ScriptingBox = function(box)
         end
     end
     box:GetPropertyChangedSignal("Text"):Connect(change)
+    box.Focused:Connect(change)
+    box.FocusLost:Connect(change)
+    box:GetPropertyChangedSignal("SelectionStart"):Connect(change)
+    box:GetPropertyChangedSignal("CursorPosition"):Connect(change)
     change()
     label.Parent = box.Parent
     return label
@@ -263,6 +267,7 @@ local GetPath
 GetPath = function(Instance,pass)
     if Instance == game then return "game" end
     if Instance == workspace then return "workspace" end
+    if not Instance then return "nil" end
     if Instance.Parent == game then return 'game["'..tostring(Instance)..'"]' end
     if Instance == LP and not pass then return "game:GetService(\"Players\").LocalPlayer" end
     if Instance == LP.Character and not pass then return "game:GetService(\"Players\").LocalPlayer.Character" end
@@ -1228,7 +1233,7 @@ local backup2 = rawget(mt,"__index")
 local backup3 = rawget(mt,"__newindex")
 local FireServerBackup
 local InvokeServerBackup
-local FireServerHook = newcclosure(function(self,...)
+local FireServerHook = function(self,...)
     if not Settings["Enabled"] then return FireServerBackup(self,...) end
     local args = {...}
     for i,v in pairs(IgnoredRemotes) do
@@ -1246,19 +1251,19 @@ local FireServerHook = newcclosure(function(self,...)
             end
         end
     end
-    local scr = getcallingscript() or getfenv(3)["script"] or "Unknown"
+    local scr = getcallingscript() or getfenv(2)["script"] or "Unknown"
     local RemoteStuff = {
         ["scr"] = scr,
         ["rem"] = self,
         ["args"] = args,
         ["method"] = "FireServer",
         ["Hidden"] = true,
-        ["Function"] = getcallingfunction(3),
-        ["ToScript"] = ToScript(self,scr,getcallingfunction(3),"FireServer",true,unpack(args))
+        ["Function"] = getcallingfunction(2),
+        ["ToScript"] = ToScript(self,scr,getcallingfunction(2),"FireServer",true,unpack(args))
     }
     remote_bindable.Fire(remote_bindable,"OnRemote",RemoteStuff)
     return FireServerBackup(self,...)
-end)
+end
 local InvokeServerHook = newcclosure(function(self,...)
     if not Settings["Enabled"] then return InvokeServerBackup(self,...) end
     local args = {...}
