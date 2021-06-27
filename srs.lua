@@ -257,11 +257,11 @@ local ServiceToString = function(inst)
     return [[game:GetService("]]..inst.ClassName..[[")]]
 end
 local goddam_parse = {
-	["<"] = "&lt;",
-	[">"] = "&gt;",
-	["\""] = "&quot;",
-	["'"] = "&apos;",
-	["&"] = "&amp;"
+    ["<"] = "&lt;",
+    [">"] = "&gt;",
+    ["\""] = "&quot;",
+    ["'"] = "&apos;",
+    ["&"] = "&amp;"
 }
 local GetPath
 GetPath = function(Instance,pass)
@@ -287,13 +287,13 @@ GetPath = function(Instance,pass)
             local thing_name = newstuff[#newstuff]
             local new_thing_name = ""
             for i,v in pairs(string.split(thing_name,"")) do
-            	if goddam_parse[v] then
-            		new_thing_name = new_thing_name..goddam_parse[v]
-            	elseif v == "<" or v == ">" or v == "\n" or v == "\t" or (not string.match(v,"%a") and not string.match(v,"%p") and not string.match(v,"%s") and not string.match(v,"%d")) then
-            		new_thing_name = new_thing_name.."\\"..tostring(string.byte(v))
-            	else
-            		new_thing_name = new_thing_name..v
-            	end
+                if goddam_parse[v] then
+                    new_thing_name = new_thing_name..goddam_parse[v]
+                elseif v == "<" or v == ">" or v == "\n" or v == "\t" or (not string.match(v,"%a") and not string.match(v,"%p") and not string.match(v,"%s") and not string.match(v,"%d")) then
+                    new_thing_name = new_thing_name.."\\"..tostring(string.byte(v))
+                else
+                    new_thing_name = new_thing_name..v
+                end
             end
             newstuff[#newstuff] = new_thing_name
             for i,v in pairs(newstuff) do
@@ -340,13 +340,13 @@ GetType = function(Instance)
             return "Color3.new(" .. tostring(Instance) .. ")"
         end,
         ["string"] = function()
-        	local new_thing_name = ""
+            local new_thing_name = ""
             for i,v in pairs(string.split(Instance,"")) do
-            	if v == "<" or v == ">" or v == "\n" or v == "\t" or (not string.match(v,"%a") and not string.match(v,"%p") and not string.match(v,"%s") and not string.match(v,"%d")) then
-            		new_thing_name = new_thing_name.."\\"..tostring(string.byte(v))
-            	else
-            		new_thing_name = new_thing_name..v
-            	end
+                if v == "<" or v == ">" or v == "\n" or v == "\t" or (not string.match(v,"%a") and not string.match(v,"%p") and not string.match(v,"%s") and not string.match(v,"%d")) then
+                    new_thing_name = new_thing_name.."\\"..tostring(string.byte(v))
+                else
+                    new_thing_name = new_thing_name..v
+                end
             end
             if string.find(new_thing_name,"\"") or string.find(new_thing_name,"'") or string.find(new_thing_name,"\n") then
                 return "[["..tostring(new_thing_name).."]]"
@@ -416,16 +416,16 @@ FindRemotes = function(thing,in_what)
         if v:IsDescendantOf(game:GetService("RobloxReplicatedStorage")) then continue end
         if v.Name == "CharacterSoundEvent" and v:IsDescendantOf(workspace) then continue end
         if v:IsA("RemoteEvent") or v:IsA("RemoteFunction") then
-        	local has_been_logged = false
-        	for i2,v2 in pairs(in_what) do
-        		if v2 == v then
-        			has_been_logged = true
-        			break
-        		end
-        	end
-        	if not has_been_logged then
-            	table.insert(in_what,v)
-        	end
+            local has_been_logged = false
+            for i2,v2 in pairs(in_what) do
+                if v2 == v then
+                    has_been_logged = true
+                    break
+                end
+            end
+            if not has_been_logged then
+                table.insert(in_what,v)
+            end
         end
         FindRemotes(v,in_what)
     end
@@ -582,7 +582,7 @@ RightClickOptions = {
         },
         [2] = {
             ["Text"] = "Fire 20x",
-            ["Function"] = function()
+            ["Function"] = function(rem,args)
                 for i = 1,20 do
                     if rem:IsA("RemoteFunction") then
                         rem:InvokeServer(unpack(args))
@@ -1086,17 +1086,17 @@ end
 UpdateScripts = function()
     local FoundScripts = {}
     for i,v in pairs(getscripts()) do
-    	if v:IsA("LocalScript") then
-    		if string.find(string.lower(v.Name),"chat") or string.find(string.lower(v.Name),"camera") or v:IsDescendantOf(game.Chat) then continue end
-    		if v.Parent == nil and v.Name == "LocalScript" then continue end
-    		table.insert(FoundScripts,v)
-    	end
+        if v:IsA("LocalScript") then
+            if string.find(string.lower(v.Name),"chat") or string.find(string.lower(v.Name),"camera") or v:IsDescendantOf(game.Chat) then continue end
+            if v.Parent == nil and v.Name == "LocalScript" then continue end
+            table.insert(FoundScripts,v)
+        end
     end
     for i,v in pairs(getscripts()) do
-    	if v:IsA("ModuleScript") then
-    		if string.find(string.lower(v.Name),"chat") or string.find(string.lower(v.Name),"camera") or string.find(string.lower(v.Name),"control") or string.find(string.lower(v.Name),"poppercam") or string.find(string.lower(v.Name),"message") or v:IsDescendantOf(game.Chat) then continue end
-    		table.insert(FoundScripts,v)
-    	end
+        if v:IsA("ModuleScript") then
+            if string.find(string.lower(v.Name),"chat") or string.find(string.lower(v.Name),"camera") or string.find(string.lower(v.Name),"control") or string.find(string.lower(v.Name),"poppercam") or string.find(string.lower(v.Name),"message") or v:IsDescendantOf(game.Chat) then continue end
+            table.insert(FoundScripts,v)
+        end
     end
     for i,v in pairs(ScriptListLogsFrame:GetChildren()) do
         v:Destroy()
