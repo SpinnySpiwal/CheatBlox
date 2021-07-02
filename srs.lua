@@ -80,11 +80,9 @@ local MakeCoolButton
 local UpdateRemotes
 local CreateButtonLog
 local UpdateScripts
-local mt = getrawmetatable(game)
-setreadonly(mt,false)
-local backup = rawget(mt,"__namecall")
-local backup2 = rawget(mt,"__index")
-local backup3 = rawget(mt,"__newindex")
+local backup
+local backup2
+local backup3
 
 ---// Support //---
 
@@ -617,7 +615,7 @@ RightClickOptions = {
         [4] = {
             ["Text"] = "To Script",
             ["Function"] = function(func)
-                local str = "local function ReturnFunc()\n    for i,v in pairs(getgc()) do\n        if type(v) == \"function\" and not is_synapse_function(v) and islclosure(v) then\n"
+                local str = "local function ReturnFunc()\n    for i,v in pairs(getgc()) do\n        if type(v) == \"function\" and islclosure(v) then\n"
                 str = str.."            if #debug.getconstants(v) == "..tostring(#debug.getconstants(func)) -- add more conds
                 local capped_stuff = 0
                 for i,v in pairs(debug.getconstants(func)) do
@@ -1232,11 +1230,6 @@ remote_bindable.Event:Connect(function(what,...)
         OnRemote(...)
     end
 end)
-local mt = getrawmetatable(game)
-setreadonly(mt,false)
-local backup = rawget(mt,"__namecall")
-local backup2 = rawget(mt,"__index")
-local backup3 = rawget(mt,"__newindex")
 local FireServerBackup
 local InvokeServerBackup
 local FireServerHook = function(self,...)
@@ -1304,7 +1297,7 @@ local InvokeServerHook = newcclosure(function(self,...)
 end)
 FireServerBackup = hookfunction(Instance.new("RemoteEvent").FireServer,FireServerHook)
 InvokeServerBackup = hookfunction(Instance.new("RemoteFunction").InvokeServer,InvokeServerHook)
-mt.__namecall = newcclosure(function(self,...)
+backup = hookmetamethod(game,"__namecall",function(self,...)
     if not Settings["Enabled"] then return backup(self,...) end
     if getcontext() == 6 or checkcaller() or getnamecallmethod() == "Fire" then return backup(self,...) end
     local OLD_NC = getnamecallmethod()
@@ -1383,7 +1376,7 @@ mt.__namecall = newcclosure(function(self,...)
     coroutine.resume(coroutine.create(OnScript),Stuff)
     return backup(self,...)
 end)
-mt.__index = newcclosure(function(tbl,idx)
+backup2 = hookmetamethod(game,"__index",function(tbl,idx)
     if not SRS_ENABLED then return backup2(tbl,idx) end
     if checkcaller() or getcontext() == 6 then return backup2(tbl,idx) end
     if idx == "CFrame" or idx == "Position" then return backup2(tbl,idx) end
@@ -1414,7 +1407,7 @@ mt.__index = newcclosure(function(tbl,idx)
     coroutine.resume(coroutine.create(OnScript),Stuff)
     return backup2(tbl,idx)
 end)
-mt.__newindex = newcclosure(function(tbl,idx,val)
+backup3 = hookmetamethod(game,"__newindex",function(tbl,idx,val)
     if not SRS_ENABLED then return backup3(tbl,idx,val) end
     if checkcaller() or getcontext() == 6 then return backup3(tbl,idx,val) end
     if idx == "CFrame" or idx == "Position" then return backup3(tbl,idx,val) end
@@ -1445,7 +1438,6 @@ mt.__newindex = newcclosure(function(tbl,idx,val)
     coroutine.resume(coroutine.create(OnScript),Stuff)
     return backup3(tbl,idx,val)
 end)
-setreadonly(mt,true)
 
 local UpdateIgnoredCalls = function()
     for i,v in pairs(IgnoredLogsFrame:GetChildren()) do
