@@ -244,14 +244,20 @@ end
 local old_rc_frame
 local RightClick
 local ValChanger
-local get_srv_a = function(inst)
-    if not inst then return "ERR_NIL_INST" end
-    if typeof(inst) == "userdata" then return "ERR_NIL_INST" end
-    local srv = inst
-    repeat srv = srv.Parent until srv.Parent == game
+local get_srv_a = function(srv)
+    if (not srv) or typeof(srv) == "userdata" then return "ERR_NIL_INST" end
+    if srv.Parent == nil then
+        return "[nil]"
+    end
+    if srv.Parent == game then
+        return srv
+    end
+    repeat srv = srv.Parent until not srv or srv.Parent == game
+    if not srv then return "ERR_NIL_INST" end
     return srv
 end
 local ServiceToString = function(inst)
+    if typeof(inst) ~= "Instance" then return "[nil]" end
     return [[game:GetService("]]..inst.ClassName..[[")]]
 end
 local goddam_parse = {
@@ -311,7 +317,7 @@ GetPath = function(Instance,pass)
             end
             return almost
         else
-            return "[NIL]."..Instance:GetFullName()
+            return "[nil]."..Instance:GetFullName()
         end
     else
         return tostring(Instance)
@@ -1084,15 +1090,14 @@ end
 UpdateScripts = function()
     local FoundScripts = {}
     for i,v in pairs(getscripts()) do
-        if v:IsA("LocalScript") then
-            if string.find(string.lower(v.Name),"chat") or string.find(string.lower(v.Name),"camera") or v:IsDescendantOf(game.Chat) then continue end
-            if v.Parent == nil and v.Name == "LocalScript" then continue end
+        if v and v:IsA("LocalScript") then
+            if v.Name == "Animate" or v:IsDescendantOf(game:GetService("Chat")) or v:IsDescendantOf(game:GetService("CoreGui")) then continue end
             table.insert(FoundScripts,v)
         end
     end
     for i,v in pairs(getscripts()) do
         if v:IsA("ModuleScript") then
-            if string.find(string.lower(v.Name),"chat") or string.find(string.lower(v.Name),"camera") or string.find(string.lower(v.Name),"control") or string.find(string.lower(v.Name),"poppercam") or string.find(string.lower(v.Name),"message") or v:IsDescendantOf(game.Chat) then continue end
+            if v.Name == "Animate" or v:IsDescendantOf(game:GetService("Chat")) or v:IsDescendantOf(game:GetService("CoreGui")) then continue end
             table.insert(FoundScripts,v)
         end
     end
@@ -1257,8 +1262,8 @@ local FireServerHook = function(self,...)
         ["args"] = args,
         ["method"] = "FireServer",
         ["Hidden"] = true,
-        ["Function"] = getcallingfunction(2),
-        ["ToScript"] = ToScript(self,scr,getcallingfunction(2),"FireServer",true,unpack(args))
+        ["Function"] = getcallingfunction(3),
+        ["ToScript"] = ToScript(self,scr,getcallingfunction(3),"FireServer",true,unpack(args))
     }
     remote_bindable.Fire(remote_bindable,"OnRemote",RemoteStuff)
     return FireServerBackup(self,...)
@@ -1397,7 +1402,7 @@ backup2 = hookmetamethod(game,"__index",function(tbl,idx)
     end
     local scr = getfenv(3)["script"]
     local Stuff = {
-        ["Function"] = getcallingfunction(),
+        ["Function"] = getcallingfunction(3),
         ["scr"] = scr,
         ["Self"] = tbl,
         ["Index"] = idx,
