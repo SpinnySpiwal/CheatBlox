@@ -11,7 +11,7 @@ repeat wait() until game and workspace and game:IsLoaded()
 if getgenv().CheatBloxRunning then return end
 getgenv().CheatBloxRunning = true
 for i,v in pairs(getconnections(game:GetService("ScriptContext").Error)) do
-    --v:Disable()
+    v:Disable()
 end
 for i,v in pairs(getconnections(game:GetService("LogService").MessageOut)) do
     --v:Disable()
@@ -56,12 +56,10 @@ Some elements are obscured by the menu frame, so be sure to rehide it.
 <b>Changelog:</b>
 
 
-<b>+</b> Everything was rewritten, script is now just under 2k lines.
-<b>+</b> New UI.
-<b>+</b> Debug tab now supports protos.
-<b>+</b> Scripts tab.
-<b>+</b> More right-clicking options.
-<b>*</b> Fixed value scanner.
+<b>*</b> Changed UX a bit.
+<b>*</b> Bugfixes.
+
+
 
 Made By <b>Stefan#6965</b>
 Discord Code: NRYJj9STbq
@@ -368,7 +366,11 @@ GetType = function(Instance)
             return "newproxy(false)"
         end,
         ["table"] = function()
-            return (Instance == {} and "{}") or "{...}"
+            if Instance == {} or (#Instance == 0 and next(Instance) == nil) then
+                return "{}"
+            else
+                return "{'CheatBlox: something wierd here?'}"
+            end
         end
     }
     if Types[string.lower(typeof(Instance))] ~= nil then
@@ -382,12 +384,12 @@ TableString = function(T,N)
     if not N then N = 1 end
     local M = {}
     for i, v in pairs(T) do
-        local I = "\n"..string.rep("    ",N).."[".. ValueToString(i) .. "] = "
-        table.insert(M, tostring(I) .. (type(v) == "table" and N < 100 and TableString(v,N+1) or ValueToString(v)))
+        local I = "\n"..string.rep("    ",N).."[".. ValueToString(i,true) .. "] = "
+        table.insert(M, tostring(I) .. (type(v) == "table" and N < 100 and TableString(v,N+1) or ValueToString(v,true)))
     end
     local str_to_ret = "{" .. table.concat(M, ", ") .. "\n"..string.rep("    ",N-1).."}"
     if #str_to_ret > 100000 then
-        return "[table too long]"
+        return '{"table too long!"}'
     else    
         return str_to_ret
     end
@@ -452,6 +454,7 @@ local RightClickSound = CheatBlox:WaitForChild("RightClick")
 local ChangerFrame = CheatBlox:WaitForChild("ChangerFrame")
 local MainFrame = CheatBlox:WaitForChild("MainFrame")
 local MenuFrame = MainFrame:WaitForChild("MenuFrame")
+local separator = MenuFrame:WaitForChild("MenuSeparatorFrame")
 local TopFrame = MainFrame:WaitForChild("TopFrame")
 local HomeFrame = MainFrame:WaitForChild("HomeFrame")
 local RemoteSpyFrame = MainFrame:WaitForChild("RemoteSpyFrame")
@@ -478,6 +481,7 @@ local CancelChangeButton = ChangerFrame:WaitForChild("CancelChangeButton")
 local MenuButton = TopFrame:WaitForChild("MenuButton")
 local HomeButton = MenuFrame:WaitForChild("HomeButton")
 local RemoteSpyButton = MenuFrame:WaitForChild("RemoteSpyButton")
+getgenv().testbutton = RemoteSpyButton
 local RemotesButton = MenuFrame:WaitForChild("RemotesButton")
 local IgnoredCallsButton = MenuFrame:WaitForChild("IgnoredCallsButton")
 local DebugButton = MenuFrame:WaitForChild("DebugButton")
@@ -529,7 +533,7 @@ local function GetFuncName(func)
     end)
     return name
 end
-ValueToString = function(val)
+ValueToString = function(val,frmt)
     if val == "\00" then
         return '"\\00"'
     end
@@ -550,6 +554,9 @@ ValueToString = function(val)
     end
     local tostr_val = ""
     if type(val) == "function" then
+        if frmt == true then
+            return "function() end"
+        end
         tostr_val = "function"
         pcall(function()
             tostr_val = GetFuncName(val)
@@ -1021,6 +1028,10 @@ local ChangeFrame = function(frm)
     if InTransition then return false end
     InTransition = true
     TransitionFrame.Visible = true
+    MenuOpened = false
+    MenuButton.Text = ">"
+    separator.Visible = false
+    TweenService:Create(MenuFrame,FastTween,{["AnchorPoint"] = Vector2.new(1,0)}):Play()
     TweenService:Create(TransitionFrame,FastTween,{["Size"] = UDim2.new(1,0,1,-20)}):Play()
     wait(0.31)
     HomeFrame.Visible = false
@@ -1159,9 +1170,9 @@ local ToScript = function(object,scr,fnc,method,hidden, ...)
                 script = script..TableString(v)
             end
         elseif type(v) == "function" then
-            script = script.."nil"
+            script = script.."function() end"
         else
-            script = script..ValueToString(v)
+            script = script..ValueToString(v,true)
         end
         script = script.."\n"
         table.insert(args, "v" .. i)
@@ -1237,7 +1248,7 @@ remote_bindable.Event:Connect(function(what,...)
 end)
 local FireServerBackup
 local InvokeServerBackup
-local FireServerHook = function(self,...)
+local FireServerHook = newcclosure(function(self,...)
     if not Settings["Enabled"] then return FireServerBackup(self,...) end
     local args = {...}
     for i,v in pairs(IgnoredRemotes) do
@@ -1255,7 +1266,7 @@ local FireServerHook = function(self,...)
             end
         end
     end
-    local scr = getcallingscript() or getfenv(2)["script"] or "Unknown"
+    local scr = getcallingscript() or getfenv(3)["script"] or "Unknown"
     local RemoteStuff = {
         ["scr"] = scr,
         ["rem"] = self,
@@ -1267,7 +1278,7 @@ local FireServerHook = function(self,...)
     }
     remote_bindable.Fire(remote_bindable,"OnRemote",RemoteStuff)
     return FireServerBackup(self,...)
-end
+end)
 local InvokeServerHook = newcclosure(function(self,...)
     if not Settings["Enabled"] then return InvokeServerBackup(self,...) end
     local args = {...}
@@ -1492,9 +1503,11 @@ end)
 
 MenuButton.MouseButton1Click:Connect(function()
     if MenuOpened then
+        separator.Visible = false
         MenuButton.Text = ">"
         TweenService:Create(MenuFrame,FastTween,{["AnchorPoint"] = Vector2.new(1,0)}):Play()
     else
+        separator.Visible = true
         MenuButton.Text = "<"
         TweenService:Create(MenuFrame,FastTween,{["AnchorPoint"] = Vector2.new(0,0)}):Play()
     end
@@ -1626,22 +1639,22 @@ SearchValButton.MouseButton1Click:Connect(function()
                 table.insert(literally_everything,v2)
             end
         end
-        for i2,v2 in pairs(game.ReplicatedFirst:GetDescendants()) do
+        for i2,v2 in pairs(game:GetService("ReplicatedFirst"):GetDescendants()) do
             if v2.ClassName:sub(-5) == "Value" or v2.ClassName:find("Text") then
                 table.insert(literally_everything,v2)
             end
         end
-        for i2,v2 in pairs(game.ReplicatedStorage:GetDescendants()) do
+        for i2,v2 in pairs(game:GetService("ReplicatedStorage"):GetDescendants()) do
             if v2.ClassName:sub(-5) == "Value" or v2.ClassName:find("Text")then
                 table.insert(literally_everything,v2)
             end
         end
-        for i2,v2 in pairs(game.StarterGui:GetDescendants()) do
+        for i2,v2 in pairs(game:GetService("StarterGui"):GetDescendants()) do
             if v2.ClassName:sub(-5) == "Value" or v2.ClassName:find("Text") then
                 table.insert(literally_everything,v2)
             end
         end
-        for i2,v2 in pairs(game.StarterPack:GetDescendants()) do
+        for i2,v2 in pairs(game:GetService("StarterPack"):GetDescendants()) do
             if v2.ClassName:sub(-5) == "Value" or v2.ClassName:find("Text") then
                 table.insert(literally_everything,v2)
             end
@@ -1652,7 +1665,7 @@ SearchValButton.MouseButton1Click:Connect(function()
                 table.insert(literally_everything,v2)
             end
         end
-        for i2,v2 in pairs(game.Lighting:GetDescendants()) do
+        for i2,v2 in pairs(game:GetService("Lighting"):GetDescendants()) do
             if v2.ClassName:sub(-5) == "Value" or v2.ClassName:find("Text") then
                 table.insert(literally_everything,v2)
             end
@@ -1948,4 +1961,8 @@ for i,v in pairs(CheatBlox:GetDescendants()) do
 end
 CheatBlox.Name = ran_gen(100)
 wait()
-CheatBlox.Parent = game:GetService("CoreGui")
+if gethui and type(gethui) == "function" then
+    CheatBlox.Parent = gethui()
+else
+    CheatBlox.Parent = game:GetService("CoreGui")
+end
